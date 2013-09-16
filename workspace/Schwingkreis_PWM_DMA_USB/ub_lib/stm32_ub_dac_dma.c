@@ -284,7 +284,7 @@ void P_DAC_DMA_InitIO1(void)
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 
   // Config des DAC-Pins als Analog-Ausgang
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_15 ;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 ;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
