@@ -1,0 +1,23 @@
+Segmentierung und Bewegungsdaten auswerten...
+
+
+1. motivation heart remodeling auf menschlichen herzen
+
+1. Merkmalsliste
+
+2. Merkmalsselektion
+
+
+
+
+Crossvalidation
+
+Features Robust?
+
+Neue Features?
+
+Features Normalverteilt?
+
+Merkmalsklassifikator? Ensemble! SVM & Bayes, GMM Gaussian Mixture Model 20 komponenten?
+
+Auf Trennbarkeit testen...
