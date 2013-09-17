@@ -15,14 +15,12 @@ period_freq = ones(200,1)*21;
 
 period_freq = (period_freq ./ prescale_ary ./ period_ary)*1000;
 
-%Für den PC
-s = serial('COM18');
-s.InputBufferSize=1024; 
-%Für den Laptop
-%s = serial('COM8');
-
-fopen(s);
 i=1;
+
+%BLUETOOTH!!!
+btt = Bluetooth('JY-MCU', 1); 
+fopen(btt);
+idn = fscanf(btt);
 
 period_res = zeros(200,1);
 
@@ -30,7 +28,7 @@ hLine = plot(period_freq, period_res);
 ylim([0 4100])
 
 while i>0
-idn = fscanf(s);
+idn = fscanf(btt);
 
 period_res = zeros(200,1);
 
@@ -60,6 +58,6 @@ catch exp
     
     disp(exp)
     
-fclose(s)
+fclose(btt)
 
 end
