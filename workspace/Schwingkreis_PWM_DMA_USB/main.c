@@ -10,7 +10,9 @@
 #include "string.h"
 #include "misc.h"
 
-/* --------------------------- Bluetooth Function -----------------*/
+
+
+	/* --------------------------- Bluetooth Function -----------------*/
 void Bluetooth_Init(void) {
 
 	/* --------------------------- System Clocks Configuration -----------------*/
@@ -113,12 +115,13 @@ void delayLoop() {
 }
 
 /* --------------------------- Bluetooth Send Function -----------------*/
-void Send_String_USART(const char *str) {
-	while (*str) {
-		while (USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET)
-			;
-		USART_SendData(USART3, *str++);
-	}
+void Send_String_USART(const char *str)
+{
+    while (*str)
+    {
+        while(USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET);
+        USART_SendData(USART3, *str++);
+    }
 }
 
 /* --------------------------- Main Function -----------------*/
@@ -167,6 +170,7 @@ int main(void) {
 	long meas_comb = 0;
 	int meas_fin = 0;
 
+
 	while (1) {
 
 		STM32F4_Discovery_LEDOn(LED6);
@@ -182,61 +186,67 @@ int main(void) {
 			period = period_ary[i - 1];
 			UB_DAC_DMA_SetFrq1(1 - 1, period - 1);
 
+
 			meas_raw = 0;
 			meas_comb = 0;
 			meas_fin = 0;
-
-			/*
-			 for(k = 1; k <= 5000; k++)
-			 {
-			 meas_raw = ADC_GetConversionValue(ADC1);
-			 meas_comb = meas_comb + meas_raw;
-			 }
-			 meas_comb = meas_comb/5000;
-			 meas_fin = (int)meas_comb;
-			 */
-
+/*
+			for(k = 1; k <= 5000; k++)
+			{
+				meas_raw = ADC_GetConversionValue(ADC1);
+				meas_comb = meas_comb + meas_raw;
+			}
+			meas_comb = meas_comb/5000;
+			meas_fin = (int)meas_comb;
+*/
 			//sprintf(buffer, "%d", ADC_GetConversionValue(ADC1));
-
 			meas_fin = ADC_GetConversionValue(ADC1);
 
-			if (meas_fin < 1000) {
-				if (meas_fin > 99) {
-					sprintf(buffer, "%d", (int) meas_fin);
+			if (meas_fin < 1000)
+			{
+				if (meas_fin > 99)
+				{
+					sprintf(buffer, "%d", (int)meas_fin);
 					strcat(str_output, buffer);
 					strcat(str_output, "X");
 					Send_String_USART(str_output);
-				} else {
-					if (meas_fin > 9) {
-						sprintf(buffer, "%d", (int) meas_fin);
+				}
+				else
+				{
+					if (meas_fin > 9)
+					{
+						sprintf(buffer, "%d", (int)meas_fin);
 						strcat(str_output, buffer);
 						strcat(str_output, "XX");
 						Send_String_USART(str_output);
-					} else {
-						sprintf(buffer, "%d", (int) meas_fin);
-						strcat(str_output, buffer);
-						strcat(str_output, "XXX");
-						Send_String_USART(str_output);
+					}
+					else
+					{
+							sprintf(buffer, "%d", (int)meas_fin);
+							strcat(str_output, buffer);
+							strcat(str_output, "XXX");
+							Send_String_USART(str_output);
 					}
 
 				}
-			} else {
-				sprintf(str_output, "%d", (int) meas_fin);
+			}
+			else
+			{
+				sprintf(str_output, "%d", (int)meas_fin);
 				Send_String_USART(str_output);
 
 			}
 
-			/*
-			 sprintf(buffer, "%d", ADC_GetConversionValue(ADC1));
-			 strcat(str_output, buffer);
-			 strcat(str_output, ".");
-			 Send_String_USART(str_output);
-			 */
+/*
+			//sprintf(buffer, "%d", ADC_GetConversionValue(ADC1));
+			strcat(str_output, buffer);
+			strcat(str_output, ".");
+			Send_String_USART(str_output);
+*/
 
 			buffer[0] = '\0';
 			str_output[0] = '\0';
 		}
-
 		//Sendevorgang abgeschlossen
 		Send_String_USART("END\r\n");
 
@@ -244,4 +254,6 @@ int main(void) {
 		delayLoop();
 	}
 }
+
+
 

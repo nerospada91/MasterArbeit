@@ -140,13 +140,28 @@ while 1
     touchit_gui_data = guidata(handles.TouchIT_main);
     if isfield(touchit_gui_data, 'dataU1')
         
-        set(handles.pb_user1, 'BackgroundColor', 'green');
+        fact =  corr(touchit_gui_data.dataU1', period_res);
+        
+        if fact > 0.75
+            set(handles.pb_user1, 'BackgroundColor', 'green');
+        else
+            set(handles.pb_user1, 'BackgroundColor', [0.94 0.94 0.94]);
+        end
+        
         
     end
     
     if isfield(touchit_gui_data, 'dataU2')
         
-        set(handles.pb_user2, 'BackgroundColor', 'green');
+        fact =  corr(touchit_gui_data.dataU2', period_res);
+        
+        if fact > 0.75
+            set(handles.pb_user2, 'BackgroundColor', 'green');
+        else
+            set(handles.pb_user2, 'BackgroundColor', [0.94 0.94 0.94]);
+        end
+        
+
         
     end
     
