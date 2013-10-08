@@ -1,0 +1,7 @@
+
+		Send_String_USART("AT");
+
+		STM32F4_Discovery_LEDOn(LED6);
+		delayLoop();
+		STM32F4_Discovery_LEDOff(LED6);
+		delayLoop();
