@@ -10,16 +10,13 @@
 #include "string.h"
 #include "misc.h"
 
-
-
-	/* --------------------------- Bluetooth Function -----------------*/
+/* --------------------------- Bluetooth Function -----------------*/
 void Bluetooth_Init(void) {
 
 	/* --------------------------- System Clocks Configuration -----------------*/
 	/* USART3 clock enable */
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
-
 	/* GPIOB clock enable */
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -108,21 +105,138 @@ void Input_Init() {
 
 /* --------------------------- Simple Delay Loop LED-Flash -----------------*/
 void delayLoop() {
-	uint32_t delayCount = 1000000;
+	uint32_t delayCount = 10000000;
 	while (delayCount > 0) {
 		delayCount--;
 	}
 }
 
 /* --------------------------- Bluetooth Send Function -----------------*/
-void Send_String_USART(const char *str)
-{
-    while (*str)
-    {
-        while(USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET);
-        USART_SendData(USART3, *str++);
-    }
+void Send_String_USART(const char *str) {
+	while (*str) {
+		while (USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET)
+			;
+		USART_SendData(USART3, *str++);
+	}
 }
+
+/* --------------------------- Signal Generator Function -----------------*/
+void SignalGenerator_Init() {
+
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE); //The ADC1 is connected the APB2 peripheral bus thus we will use its clock source
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE); //Clock for the ADC port PORT Group C
+
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	/*-------------------------- GPIO Configuration ----------------------------*/
+	// 1 = CLK || 3 = FQ || 7 = Reset
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_7;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE); //The ADC1 is connected the APB2 peripheral bus thus we will use its clock source
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE); //Clock for the ADC port PORT Group C
+
+	/*-------------------------- GPIO Configuration ----------------------------*/
+	//91 = Data
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOD, &GPIO_InitStructure);
+
+	// Init the Generator
+	GPIO_SetBits(GPIOA, GPIO_Pin_1);
+	GPIO_ResetBits(GPIOA, GPIO_Pin_1);
+	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
+	GPIO_ResetBits(GPIOD, GPIO_Pin_9);
+	GPIO_ResetBits(GPIOA, GPIO_Pin_7);
+
+}
+
+void SignalGenerator_Reset() {
+
+	GPIO_ResetBits(GPIOA, GPIO_Pin_1);
+	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
+
+	//Reset Signal
+	GPIO_ResetBits(GPIOA, GPIO_Pin_7);
+	GPIO_SetBits(GPIOA, GPIO_Pin_7);
+	GPIO_ResetBits(GPIOA, GPIO_Pin_7);
+
+	//CLK Signal
+	GPIO_ResetBits(GPIOA, GPIO_Pin_1);
+	GPIO_SetBits(GPIOA, GPIO_Pin_1);
+	GPIO_ResetBits(GPIOA, GPIO_Pin_1);
+
+	//FQ-UP Signal
+	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
+	GPIO_SetBits(GPIOA, GPIO_Pin_3);
+	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
+
+}
+
+void Byte_Write(const char word) {
+	int i;
+	for (i = 0; i < 8; i++) {
+		//Schreiben des Bytes (8 Bit)
+		//((uint8_t __IO*)&GPIOD->ODR)[0] = (word >> i) & 0x01;
+		GPIOD->ODR = (word >> i) & 0x01;
+		//CLK Rising Edge... verschiebt Pointer ein Register weiter
+		GPIO_SetBits(GPIOA, GPIO_Pin_1);
+		GPIO_ResetBits(GPIOA, GPIO_Pin_1);
+	}
+}
+
+void SignalGenerator_SetFreq(double frequence) {
+
+	char w;
+	char w0 = 0x00;
+	long int y;
+	double x;
+
+	//Calculate the frequency of the HEX value
+	x = 4294967295 / 125; //Suitable for 125M Crystal
+	frequence = frequence / 1000000;
+	frequence = frequence * x;
+	y = frequence;
+
+	//FREQ -> Steigende Flanke -> laden des bis zu 40 Bis Worts
+	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
+	GPIO_SetBits(GPIOA, GPIO_Pin_3);
+	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
+
+	//write w4
+	w = (y >>= 0);
+	Byte_Write(w);
+
+	//write w3
+	w = (y >> 8);
+	Byte_Write(w);
+
+	//write w2
+	w = (y >> 16);
+	Byte_Write(w);
+
+	//write w1
+	w = (y >> 24);
+	Byte_Write(w);
+
+	//write w0
+	w = w0;
+	Byte_Write(w);
+
+	GPIO_SetBits(GPIOA, GPIO_Pin_3);
+	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
+}
+
+
+
+
 
 /* --------------------------- Main Function -----------------*/
 int main(void) {
@@ -130,130 +244,234 @@ int main(void) {
 	//Init the Sytem
 	SystemInit();
 	//Init Bluetooth
-	Bluetooth_Init();
+	//Bluetooth_Init();
 	//Init ADC
-	Input_Init();
+	//Input_Init();
 	//Init LED (Blue)
 	STM32F4_Discovery_LEDInit(LED6);
 
 	//DAC_WAVE4_RECHTECK
 	//an DAC1 (PA4) ein Rechteck-Signal ausgeben
 	//Init vom DAC im DMA-Mode (DAC-1)
-	UB_DAC_DMA_Init(SINGLE_DAC1_DMA);
-	UB_DAC_DMA_SetWaveform1(DAC_WAVE4_RECHTECK);
+	//UB_DAC_DMA_Init(SINGLE_DAC1_DMA);
+	//UB_DAC_DMA_SetWaveform1(DAC_WAVE4_RECHTECK);
+	//UB_DAC_DMA_SetFrq1(1, 21000);
 
-	//Vorgebene Werte für Teiler und Periode um den Frequenz vorzugeben
-	int period_ary[] = { 21000, 10500, 7000, 5250, 4200, 3500, 3000, 2625, 2333,
-			2100, 1909, 1750, 1615, 1500, 1400, 1313, 1235, 1167, 1105, 1050,
-			1000, 955, 913, 875, 840, 808, 778, 750, 724, 700, 677, 656, 636,
-			618, 600, 583, 568, 553, 538, 525, 512, 500, 488, 477, 467, 457,
-			447, 438, 429, 420, 412, 404, 396, 389, 382, 375, 368, 362, 356,
-			350, 344, 339, 333, 328, 323, 318, 313, 309, 304, 300, 296, 292,
-			288, 284, 280, 276, 273, 269, 266, 263, 259, 256, 253, 250, 247,
-			244, 241, 239, 236, 233, 231, 228, 226, 223, 221, 219, 216, 214,
-			212, 210, 208, 206, 204, 202, 200, 198, 196, 194, 193, 191, 189,
-			188, 186, 184, 183, 181, 179, 178, 176, 175, 174, 172, 171, 169,
-			168, 167, 165, 164, 163, 162, 160, 159, 158, 157, 156, 154, 153,
-			152, 151, 150, 149, 148, 147, 146, 145, 144, 143, 142, 141, 140,
-			139, 138, 137, 136, 135, 133, 131, 130, 128, 127, 125, 124, 122,
-			121, 119, 118, 117, 115, 114, 113, 112, 111, 109, 108, 107, 106,
-			105, 104, 103, 102, 101, 100, 99, 98, 97, 96, 95, 95, 94, 93, 92,
-			91, 90, 89, 88, 88, 87, 86, 85, 84 };
-	//Init some Variables for while loop ADC/DAC
-	int i;
-	int period;
-	char str_output[10];
-	char buffer[10];
-
-	int k;
-	int meas_raw = 0;
-	long meas_comb = 0;
-	int meas_fin = 0;
-
+	SignalGenerator_Init();
+	SignalGenerator_SetFreq(10000);
 
 	while (1) {
+		//SignalGenerator_SetFreq(50000);
 
 		STM32F4_Discovery_LEDOn(LED6);
-
-		//uint16_t Data = 1;
-		//USART_SendData(USART3, Data); // Echo Char
-
-		//Wir fahren mit dieser Schleife die Frequnezen ab
-		for (i = 1; i <= 200; i++) {
-
-			//Frequenz setzen
-			//UB_DAC_DMA_SetFrq1(prescale-1,period-1);
-			period = period_ary[i - 1];
-			UB_DAC_DMA_SetFrq1(1 - 1, period - 1);
-
-
-			meas_raw = 0;
-			meas_comb = 0;
-			meas_fin = 0;
-/*
-			for(k = 1; k <= 5000; k++)
-			{
-				meas_raw = ADC_GetConversionValue(ADC1);
-				meas_comb = meas_comb + meas_raw;
-			}
-			meas_comb = meas_comb/5000;
-			meas_fin = (int)meas_comb;
-*/
-			//sprintf(buffer, "%d", ADC_GetConversionValue(ADC1));
-			meas_fin = ADC_GetConversionValue(ADC1);
-
-			if (meas_fin < 1000)
-			{
-				if (meas_fin > 99)
-				{
-					sprintf(buffer, "%d", (int)meas_fin);
-					strcat(str_output, buffer);
-					strcat(str_output, "X");
-					Send_String_USART(str_output);
-				}
-				else
-				{
-					if (meas_fin > 9)
-					{
-						sprintf(buffer, "%d", (int)meas_fin);
-						strcat(str_output, buffer);
-						strcat(str_output, "XX");
-						Send_String_USART(str_output);
-					}
-					else
-					{
-							sprintf(buffer, "%d", (int)meas_fin);
-							strcat(str_output, buffer);
-							strcat(str_output, "XXX");
-							Send_String_USART(str_output);
-					}
-
-				}
-			}
-			else
-			{
-				sprintf(str_output, "%d", (int)meas_fin);
-				Send_String_USART(str_output);
-
-			}
-
-/*
-			//sprintf(buffer, "%d", ADC_GetConversionValue(ADC1));
-			strcat(str_output, buffer);
-			strcat(str_output, ".");
-			Send_String_USART(str_output);
-*/
-
-			buffer[0] = '\0';
-			str_output[0] = '\0';
-		}
-		//Sendevorgang abgeschlossen
-		Send_String_USART("END\r\n");
+		delayLoop();
+		//GPIO_SetBits(GPIOD, GPIO_Pin_9);
 
 		STM32F4_Discovery_LEDOff(LED6);
 		delayLoop();
+		//GPIO_ResetBits(GPIOD, GPIO_Pin_9);
 	}
+
+//
+//	while (1) {
+//
+//		STM32F4_Discovery_LEDOn(LED6);
+//
+//	//Vorgebene Werte für Teiler und Periode um den Frequenz vorzugeben
+//	int period_ary[] = { 21000, 10500, 7000, 5250, 4200, 3500, 3000, 2625, 2333,
+//			2100, 1909, 1750, 1615, 1500, 1400, 1313, 1235, 1167, 1105, 1050,
+//			1000, 955, 913, 875, 840, 808, 778, 750, 724, 700, 677, 656, 636,
+//			618, 600, 583, 568, 553, 538, 525, 512, 500, 488, 477, 467, 457,
+//			447, 438, 429, 420, 412, 404, 396, 389, 382, 375, 368, 362, 356,
+//			350, 344, 339, 333, 328, 323, 318, 313, 309, 304, 300, 296, 292,
+//			288, 284, 280, 276, 273, 269, 266, 263, 259, 256, 253, 250, 247,
+//			244, 241, 239, 236, 233, 231, 228, 226, 223, 221, 219, 216, 214,
+//			212, 210, 208, 206, 204, 202, 200, 198, 196, 194, 193, 191, 189,
+//			188, 186, 184, 183, 181, 179, 178, 176, 175, 174, 172, 171, 169,
+//			168, 167, 165, 164, 163, 162, 160, 159, 158, 157, 156, 154, 153,
+//			152, 151, 150, 149, 148, 147, 146, 145, 144, 143, 142, 141, 140,
+//			139, 138, 137, 136, 135, 133, 131, 130, 128, 127, 125, 124, 122,
+//			121, 119, 118, 117, 115, 114, 113, 112, 111, 109, 108, 107, 106,
+//			105, 104, 103, 102, 101, 100, 99, 98, 97, 96, 95, 95, 94, 93, 92,
+//			91, 90, 89, 88, 88, 87, 86, 85, 84 };
+//	//Init some Variables for while loop ADC/DAC
+//	int i;
+//	int period;
+//	char str_output[10];
+//	char buffer[10];
+//
+//	int k;
+//	int meas_raw = 0;
+//	long meas_comb = 0;
+//	int meas_fin = 0;
+//
+//		//uint16_t Data = 1;
+//		//USART_SendData(USART3, Data); // Echo Char
+//
+//		//Wir fahren mit dieser Schleife die Frequnezen ab
+//		for (i = 1; i <= 200; i++) {
+//
+//			//Frequenz setzen
+//			//UB_DAC_DMA_SetFrq1(prescale-1,period-1);
+//			period = period_ary[i - 1];
+//			UB_DAC_DMA_SetFrq1(1 - 1, period - 1);
+//
+//
+//			meas_raw = 0;
+//			meas_comb = 0;
+//			meas_fin = 0;
+///*
+//			for(k = 1; k <= 5000; k++)
+//			{
+//				meas_raw = ADC_GetConversionValue(ADC1);
+//				meas_comb = meas_comb + meas_raw;
+//			}
+//			meas_comb = meas_comb/5000;
+//			meas_fin = (int)meas_comb;
+//*/
+//			//sprintf(buffer, "%d", ADC_GetConversionValue(ADC1));
+//			meas_fin = ADC_GetConversionValue(ADC1);
+//
+//			if (meas_fin < 1000)
+//			{
+//				if (meas_fin > 99)
+//				{
+//					sprintf(buffer, "%d", (int)meas_fin);
+//					strcat(str_output, buffer);
+//					strcat(str_output, "X");
+//					Send_String_USART(str_output);
+//				}
+//				else
+//				{
+//					if (meas_fin > 9)
+//					{
+//						sprintf(buffer, "%d", (int)meas_fin);
+//						strcat(str_output, buffer);
+//						strcat(str_output, "XX");
+//						Send_String_USART(str_output);
+//					}
+//					else
+//					{
+//							sprintf(buffer, "%d", (int)meas_fin);
+//							strcat(str_output, buffer);
+//							strcat(str_output, "XXX");
+//							Send_String_USART(str_output);
+//					}
+//
+//				}
+//			}
+//			else
+//			{
+//				sprintf(str_output, "%d", (int)meas_fin);
+//				Send_String_USART(str_output);
+//
+//			}
+//
+///*
+//			//sprintf(buffer, "%d", ADC_GetConversionValue(ADC1));
+//			strcat(str_output, buffer);
+//			strcat(str_output, ".");
+//			Send_String_USART(str_output);
+//*/
+//
+//			buffer[0] = '\0';
+//			str_output[0] = '\0';
+//		}
+//		//Sendevorgang abgeschlossen
+//		Send_String_USART("END\r\n");
+//
+//		STM32F4_Discovery_LEDOff(LED6);
+//		delayLoop();
+//	}
 }
 
-
-
+//void SignalGenerator_SetFreqTEST(double frequence) {
+//
+//	char w;
+//	char w0 = 0x00;
+//	long int y;
+//	double x;
+//	int i;
+//
+//	//Calculate the frequency of the HEX value
+//	x = 4294967295 / 125; //Suitable for 125M Crystal
+//	frequence = frequence / 1000000;
+//	frequence = frequence * x;
+//	y = frequence;
+//
+//	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
+//
+//
+//	//write w4
+//	w = (y);
+//	Byte_Write(w);
+//
+//	//write w3
+//	w = (y >> 8);
+//	Byte_Write(w);
+//	//write w2
+//	w = (y >> 16);
+//	Byte_Write(w);
+//
+//	//write w1
+//	w = (y >> 24);
+//	Byte_Write(w);
+//
+//	//write w0
+//	w = 0x0;
+//	Byte_Write(w);
+//
+//	GPIO_SetBits(GPIOA, GPIO_Pin_3);
+//
+//}
+//
+//void Byte_Write(unsigned char word) {
+//	int i;
+//	for (i = 0; i < 8; i++) {
+//		GPIOD->ODR = (word >> i) & 0x01;
+//
+//		GPIO_SetBits(GPIOA, GPIO_Pin_1);
+//		GPIO_ResetBits(GPIOA, GPIO_Pin_1);
+//	}
+//}
+//
+//void SignalGenerator_SetFreqTEST(double frequence) {
+//
+//	char w;
+//	char w0 = 0x00;
+//	long int y;
+//	double x;
+//	int i;
+//
+//	//Calculate the frequency of the HEX value
+//	x = 4294967295 / 125; //Suitable for 125M Crystal
+//	frequence = frequence / 1000000;
+//	frequence = frequence * x;
+//	y = frequence;
+//
+//	GPIO_SetBits(GPIOA, GPIO_Pin_3);
+//	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
+//	GPIO_ResetBits(GPIOA, GPIO_Pin_1);
+//
+//	//write w4
+//	w = (y >>= 0);
+//	Byte_Write(w);
+//
+//	//write w3
+//	w = (y >> 8);
+//	Byte_Write(w);
+//	//write w2
+//	w = (y >> 16);
+//	Byte_Write(w);
+//
+//	//write w1
+//	w = (y >> 24);
+//	Byte_Write(w);
+//
+//	//write w0
+//	w = w0;
+//	Byte_Write(w);
+//
+//	GPIO_SetBits(GPIOA, GPIO_Pin_3);
+//	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
+//}
