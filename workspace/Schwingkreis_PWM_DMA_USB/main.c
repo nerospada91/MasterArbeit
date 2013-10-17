@@ -197,8 +197,6 @@ void Byte_Write(const char word) {
 
 		// 0x1234 auf PORTD schreiben
 		GPIO_Write(GPIOD, 0x1234);
-		// Einzelnes bits schreiben
-		GPIO_WriteBit(GPIOD, GPIO_Pin_9, 0x1234);
 
 		// Lesen des Bits PC9
 		dataByte = GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_9);
@@ -209,6 +207,8 @@ void Byte_Write(const char word) {
 		// Lesen von PORTD aus dem Output Register
 		dataHalfWord = GPIO_ReadOutputData(GPIOD);
 
+		// Einzelnes bits schreiben
+		//GPIO_WriteBit(GPIOD, GPIO_Pin_9, Bit_SET);
 		//////////////////////////////////TESTENDE
 	}
 }
