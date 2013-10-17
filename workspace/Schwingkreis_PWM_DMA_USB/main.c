@@ -186,9 +186,30 @@ void Byte_Write(const char word) {
 		//Schreiben des Bytes (8 Bit)
 		//((uint8_t __IO*)&GPIOD->ODR)[0] = (word >> i) & 0x01;
 		GPIOD->ODR = (word >> i) & 0x01;
+
 		//CLK Rising Edge... verschiebt Pointer ein Register weiter
 		GPIO_SetBits(GPIOA, GPIO_Pin_1);
 		GPIO_ResetBits(GPIOA, GPIO_Pin_1);
+
+		//////////////////////////////////TEST
+		uint8_t dataByte;
+		uint16_t dataHalfWord;
+
+		// 0x1234 auf PORTD schreiben
+		GPIO_Write(GPIOD, 0x1234);
+		// Einzelnes bits schreiben
+		GPIO_WriteBit(GPIOD, GPIO_Pin_9, 0x1234);
+
+		// Lesen des Bits PC9
+		dataByte = GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_9);
+		// Lesen des Bits PC9 aus dem Output Register
+		dataByte = GPIO_ReadOutputDataBit(GPIOD, GPIO_Pin_9);
+		// Lesen von PORTD
+		dataHalfWord = GPIO_ReadInputData(GPIOD);
+		// Lesen von PORTD aus dem Output Register
+		dataHalfWord = GPIO_ReadOutputData(GPIOD);
+
+		//////////////////////////////////TESTENDE
 	}
 }
 
