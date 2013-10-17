@@ -104,8 +104,8 @@ void Input_Init() {
 }
 
 /* --------------------------- Simple Delay Loop LED-Flash -----------------*/
-void delayLoop() {
-	uint32_t delayCount = 10000000;
+void delayLoop(uint32_t delay) {
+	uint32_t delayCount = delay;
 	while (delayCount > 0) {
 		delayCount--;
 	}
@@ -185,13 +185,14 @@ void Byte_Write(const char word) {
 	for (i = 0; i < 8; i++) {
 		//Schreiben des Bytes (8 Bit)
 		//((uint8_t __IO*)&GPIOD->ODR)[0] = (word >> i) & 0x01;
-		GPIOD->ODR = (word >> i) & 0x01;
-
+		//GPIOD->ODR = (word >> i) & 0x01;
+		GPIO_Write(GPIOD, (word >> i) & 0x01);
 		//CLK Rising Edge... verschiebt Pointer ein Register weiter
 		GPIO_SetBits(GPIOA, GPIO_Pin_1);
 		GPIO_ResetBits(GPIOA, GPIO_Pin_1);
 
 		//////////////////////////////////TEST
+		/*
 		uint8_t dataByte;
 		uint16_t dataHalfWord;
 
@@ -206,10 +207,27 @@ void Byte_Write(const char word) {
 		dataHalfWord = GPIO_ReadInputData(GPIOD);
 		// Lesen von PORTD aus dem Output Register
 		dataHalfWord = GPIO_ReadOutputData(GPIOD);
-
+		 */
 		// Einzelnes bits schreiben
 		//GPIO_WriteBit(GPIOD, GPIO_Pin_9, Bit_SET);
 		//////////////////////////////////TESTENDE
+	}
+}
+
+
+void Byte_WriteDummy() {
+	int i;
+	for (i = 0; i < 40; i++) {
+
+		GPIO_SetBits(GPIOD, GPIO_Pin_9);
+		delayLoop(1000);
+		//CLK Rising Edge... verschiebt Pointer ein Register weiter
+		GPIO_SetBits(GPIOA, GPIO_Pin_1);
+		delayLoop(1000);
+		GPIO_ResetBits(GPIOA, GPIO_Pin_1);
+		delayLoop(1000);
+		GPIO_ResetBits(GPIOD, GPIO_Pin_9);
+		delayLoop(1000);
 	}
 }
 
@@ -227,11 +245,12 @@ void SignalGenerator_SetFreq(double frequence) {
 	y = frequence;
 
 	//FREQ -> Steigende Flanke -> laden des bis zu 40 Bis Worts
-	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
+	delayLoop(1000);
 	GPIO_SetBits(GPIOA, GPIO_Pin_3);
 	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
-
+	delayLoop(1000);
 	//write w4
+/*
 	w = (y >>= 0);
 	Byte_Write(w);
 
@@ -250,9 +269,14 @@ void SignalGenerator_SetFreq(double frequence) {
 	//write w0
 	w = w0;
 	Byte_Write(w);
+*/
 
+	Byte_WriteDummy();
+
+	delayLoop(1000);
 	GPIO_SetBits(GPIOA, GPIO_Pin_3);
 	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
+	delayLoop(1000);
 }
 
 
@@ -279,17 +303,26 @@ int main(void) {
 	//UB_DAC_DMA_SetFrq1(1, 21000);
 
 	SignalGenerator_Init();
-	SignalGenerator_SetFreq(10000);
+	delayLoop(1000);
+	SignalGenerator_Reset();
+	delayLoop(1000);
+	//SignalGenerator_Reset();
+
 
 	while (1) {
-		//SignalGenerator_SetFreq(50000);
 
-		STM32F4_Discovery_LEDOn(LED6);
-		delayLoop();
+		SignalGenerator_SetFreq(5000);
+
 		//GPIO_SetBits(GPIOD, GPIO_Pin_9);
 
-		STM32F4_Discovery_LEDOff(LED6);
-		delayLoop();
+		//STM32F4_Discovery_LEDOn(LED6);
+		//delayLoop(10000000);
+		//GPIO_SetBits(GPIOD, GPIO_Pin_9);
+
+		//GPIO_ResetBits(GPIOD, GPIO_Pin_9);
+
+		//STM32F4_Discovery_LEDOff(LED6);
+		//delayLoop(10000000);
 		//GPIO_ResetBits(GPIOD, GPIO_Pin_9);
 	}
 
