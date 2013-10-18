@@ -1,14 +1,15 @@
 #include "stm32f4xx.h"
-#include "stm32f4xx_conf.h"
-#include "stm32f4xx_usart.h"
-#include "stm32f4xx_rcc.h"
-#include "stm32f4xx_gpio.h"
 #include "stm32f4_discovery.h"
-#include "stm32_ub_dac_dma.h"
-#include "main.h"
 #include "stdio.h"
 #include "string.h"
-#include "misc.h"
+
+//#include "stm32_ub_dac_dma.h"
+//#include "stm32f4xx_usart.h"
+//#include "stm32f4xx_rcc.h"
+//#include "stm32f4xx_gpio.h"
+//#include "stm32f4xx_conf.h"
+//#include "main.h"
+//#include "misc.h"
 
 #define AD9850_CLK GPIO_Pin_7
 #define AD9850_FQUP GPIO_Pin_8
@@ -133,6 +134,7 @@ void Delay_Loop(uint32_t delay) {
 
 /* --------------------------- Signal Generator Clock SubFunction -----------------*/
 void AD9850_ClockCLK() {
+	//Signalflanke CLK generieren
 	GPIO_SetBits(GPIOE, AD9850_CLK);
 	Delay_Loop(10000);
 	GPIO_ResetBits(GPIOE, AD9850_CLK);
@@ -140,6 +142,7 @@ void AD9850_ClockCLK() {
 
 /* --------------------------- Signal Generator FQUP SubFunction -----------------*/
 void AD9850_ClockFQUP() {
+	//Signalflanke FQ generieren
 	GPIO_SetBits(GPIOE, AD9850_FQUP);
 	Delay_Loop(10000);
 	GPIO_ResetBits(GPIOE, AD9850_FQUP);
@@ -147,6 +150,7 @@ void AD9850_ClockFQUP() {
 
 /* --------------------------- Signal Generator Write Word SubFunction -----------------*/
 void AD9850_Write(uint8_t word) {
+	//Byte/Bit schreiben auf PE9
 	int i;
 	for(i=0; i<8; i++) {
 		GPIO_WriteBit(GPIOE, AD9850_DATA, (word >> i) & 0x01);
@@ -174,7 +178,6 @@ void AD9850_Init() {
 
 	/* --------------------------- Signal Generator RESET - once called during Init -----------------*/
 	int i;
-
 	GPIO_ResetBits(GPIOE, AD9850_CLK | AD9850_FQUP);
 	GPIO_SetBits(GPIOE, AD9850_RESET);
 

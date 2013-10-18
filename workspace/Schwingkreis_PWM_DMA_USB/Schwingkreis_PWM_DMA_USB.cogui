@@ -14,33 +14,13 @@
 <folder appearance="1" expanded="2">
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
-<part id="1"/>
-<part id="2"/>
-<part id="3"/>
-<part id="4"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
 <editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" partName="main.c" path="C:/Users/root/Desktop/MasterArbeit/workspace/Schwingkreis_PWM_DMA_USB/main.c" title="main.c" tooltip="C:/Users/root/Desktop/MasterArbeit/workspace/Schwingkreis_PWM_DMA_USB/main.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Schwingkreis_PWM_DMA_USB/main.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="12555" selectionTopPixel="983"/>
-</editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="startup_stm32f4xx.c" partName="startup_stm32f4xx.c" path="C:/Users/root/Documents/GitHub/MasterArbeit/workspace/Schwingkreis_PWM_DMA_USB/cmsis_boot/startup/startup_stm32f4xx.c" title="startup_stm32f4xx.c" tooltip="C:/Users/root/Documents/GitHub/MasterArbeit/workspace/Schwingkreis_PWM_DMA_USB/cmsis_boot/startup/startup_stm32f4xx.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Schwingkreis_PWM_DMA_USB/cmsis_boot/startup/startup_stm32f4xx.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="14654" selectionTopPixel="3825"/>
-</editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f4xx.h" partName="stm32f4xx.h" path="C:/Users/root/Desktop/MasterArbeit/workspace/Schwingkreis_PWM_DMA_USB/cmsis_boot/stm32f4xx.h" title="stm32f4xx.h" tooltip="C:/Users/root/Desktop/MasterArbeit/workspace/Schwingkreis_PWM_DMA_USB/cmsis_boot/stm32f4xx.h" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Schwingkreis_PWM_DMA_USB/cmsis_boot/stm32f4xx.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="35350" selectionTopPixel="9555"/>
-</editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f4xx_gpio.c" partName="stm32f4xx_gpio.c" path="C:/Users/root/Documents/GitHub/MasterArbeit/workspace/Schwingkreis_PWM_DMA_USB/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c" title="stm32f4xx_gpio.c" tooltip="C:/Users/root/Documents/GitHub/MasterArbeit/workspace/Schwingkreis_PWM_DMA_USB/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Schwingkreis_PWM_DMA_USB/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="13" selectionOffset="15495" selectionTopPixel="6135"/>
-</editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f4xx_gpio.h" partName="stm32f4xx_gpio.h" path="C:/Users/root/Documents/GitHub/MasterArbeit/workspace/Schwingkreis_PWM_DMA_USB/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h" title="stm32f4xx_gpio.h" tooltip="C:/Users/root/Documents/GitHub/MasterArbeit/workspace/Schwingkreis_PWM_DMA_USB/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Schwingkreis_PWM_DMA_USB/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="15" selectionOffset="2972" selectionTopPixel="1125"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="44" selectionTopPixel="0"/>
 </editor>
 </editors>
 <views>
@@ -263,49 +243,14 @@
 <navigationHistory>
 <editors>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/Schwingkreis_PWM_DMA_USB/main.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/Schwingkreis_PWM_DMA_USB/cmsis_boot/stm32f4xx.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/Schwingkreis_PWM_DMA_USB/cmsis_boot/startup/startup_stm32f4xx.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/Schwingkreis_PWM_DMA_USB/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/Schwingkreis_PWM_DMA_USB/cmsis_boot/startup/startup_stm32f4xx.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/Schwingkreis_PWM_DMA_USB/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/Schwingkreis_PWM_DMA_USB/Libraries/inc/stm32f4_discovery.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/Schwingkreis_PWM_DMA_USB/cmsis_boot/stm32f4xx.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/Schwingkreis_PWM_DMA_USB/Libraries/inc/stm32f4_discovery.h"/>
 </editors>
-<item historyLabel="main.c" index="0">
-<position/>
-</item>
-<item historyLabel="main.c" index="0">
-<position/>
-</item>
-<item historyLabel="main.c" index="0">
-<position/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="7871" y="0"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="7470" y="52"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="7810" y="0"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="7254" y="0"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position/>
-</item>
-<item historyLabel="stm32f4xx.h" index="1">
-<position info="not_deleted" x="35350" y="0"/>
-</item>
-<item historyLabel="startup_stm32f4xx.c" index="2">
-<position info="not_deleted" x="14756" y="0"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position/>
-</item>
-<item historyLabel="stm32f4xx_gpio.c" index="3">
+<item historyLabel="stm32f4xx_gpio.c" index="1">
 <position info="not_deleted" x="15495" y="13"/>
 </item>
 <item historyLabel="main.c" index="0">
@@ -314,7 +259,7 @@
 <item historyLabel="main.c" index="0">
 <position/>
 </item>
-<item historyLabel="startup_stm32f4xx.c" index="4">
+<item historyLabel="startup_stm32f4xx.c" index="2">
 <position info="not_deleted" x="14654" y="0"/>
 </item>
 <item historyLabel="main.c" index="0">
@@ -335,19 +280,19 @@
 <item historyLabel="main.c" index="0">
 <position info="not_deleted" x="1007" y="0"/>
 </item>
-<item historyLabel="stm32f4xx_gpio.h" index="5">
+<item historyLabel="stm32f4xx_gpio.h" index="3">
 <position info="not_deleted" x="3069" y="16"/>
 </item>
 <item historyLabel="main.c" index="0">
 <position info="not_deleted" x="991" y="0"/>
 </item>
-<item historyLabel="stm32f4xx_gpio.h" index="5">
+<item historyLabel="stm32f4xx_gpio.h" index="3">
 <position info="not_deleted" x="4462" y="10"/>
 </item>
 <item historyLabel="main.c" index="0">
 <position info="not_deleted" x="1002" y="0"/>
 </item>
-<item historyLabel="stm32f4xx_gpio.h" index="5">
+<item historyLabel="stm32f4xx_gpio.h" index="3">
 <position info="not_deleted" x="2972" y="15"/>
 </item>
 <item historyLabel="main.c" index="0">
@@ -416,8 +361,44 @@
 <item historyLabel="main.c" index="0">
 <position info="not_deleted" x="8041" y="0"/>
 </item>
-<item active="true" historyLabel="main.c" index="0">
+<item historyLabel="main.c" index="0">
 <position info="not_deleted" x="8137" y="70"/>
+</item>
+<item historyLabel="stm32f4_discovery.h" index="4">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="75" y="0"/>
+</item>
+<item historyLabel="stm32f4xx.h" index="5">
+<position info="not_deleted" x="35350" y="0"/>
+</item>
+<item historyLabel="stm32f4xx.h" index="5">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="stm32f4_discovery.h" index="4">
+<position info="not_deleted" x="432" y="0"/>
+</item>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="56" y="0"/>
+</item>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="13497" y="45"/>
+</item>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="24" y="0"/>
+</item>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="44" y="0"/>
+</item>
+<item historyLabel="stm32f4_discovery.h" index="6">
+<position info="not_deleted" x="432" y="0"/>
+</item>
+<item active="true" historyLabel="main.c" index="0">
+<position info="not_deleted" x="44" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -426,6 +407,9 @@
 <actionBarAdvisor/>
 </window>
 <mruList>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f4_discovery.h" tooltip="Schwingkreis_PWM_DMA_USB/Libraries/inc/stm32f4_discovery.h">
+<persistable path="/Schwingkreis_PWM_DMA_USB/Libraries/inc/stm32f4_discovery.h"/>
+</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f4xx_rcc.h" tooltip="Schwingkreis_PWM_DMA_USB/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h">
 <persistable path="/Schwingkreis_PWM_DMA_USB/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"/>
 </file>
@@ -468,9 +452,6 @@
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f4_discovery.c" tooltip="Schwingkreis_PWM_DMA_USB/Libraries/src/stm32f4_discovery.c">
 <persistable path="/Schwingkreis_PWM_DMA_USB/Libraries/src/stm32f4_discovery.c"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f4xx.h" tooltip="Schwingkreis_PWM_DMA_USB/cmsis_boot/stm32f4xx.h">
-<persistable path="/Schwingkreis_PWM_DMA_USB/cmsis_boot/stm32f4xx.h"/>
 </file>
 </mruList>
 </workbench>
