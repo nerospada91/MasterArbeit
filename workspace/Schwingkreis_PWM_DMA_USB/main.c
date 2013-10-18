@@ -10,6 +10,11 @@
 #include "string.h"
 #include "misc.h"
 
+#define AD9850_CLK GPIO_Pin_7
+#define AD9850_FQUP GPIO_Pin_8
+#define AD9850_DATA GPIO_Pin_9
+#define AD9850_RESET GPIO_Pin_10
+
 /* --------------------------- Bluetooth Function -----------------*/
 void Bluetooth_Init(void) {
 
@@ -103,12 +108,106 @@ void Input_Init() {
 
 }
 
-/* --------------------------- Simple Delay Loop LED-Flash -----------------*/
-void delayLoop(uint32_t delay) {
+/* --------------------------- Simple Delay Loop  -----------------*/
+void Delay_Loop(uint32_t delay) {
 	uint32_t delayCount = delay;
 	while (delayCount > 0) {
 		delayCount--;
 	}
+}
+
+/* --------------------------- Signal Generator Init Function -----------------*/
+void AD9850_Init() {
+
+	GPIO_InitTypeDef GPIO_InitStructure;
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+
+	GPIO_Init(GPIOE, &GPIO_InitStructure);
+
+	GPIO_ResetBits(GPIOE, AD9850_CLK | AD9850_FQUP | AD9850_RESET | AD9850_DATA);
+}
+
+/* --------------------------- Signal Generator Clock Function -----------------*/
+void AD9850_ClockCLK() {
+	GPIO_SetBits(GPIOE, AD9850_CLK);
+	Delay_Loop(10000);
+	GPIO_ResetBits(GPIOE, AD9850_CLK);
+}
+
+/* --------------------------- Signal Generator FQUP Function -----------------*/
+void AD9850_ClockFQUP() {
+	GPIO_SetBits(GPIOE, AD9850_FQUP);
+	Delay_Loop(10000);
+	GPIO_ResetBits(GPIOE, AD9850_FQUP);
+}
+
+/* --------------------------- Signal Generator Write Word Function -----------------*/
+void AD9850_Write(uint8_t word) {
+	int i;
+	for(i=0; i<8; i++) {
+		GPIO_WriteBit(GPIOE, AD9850_DATA, (word >> i) & 0x01);
+		AD9850_ClockCLK();
+	}
+}
+
+/* --------------------------- Signal Generator Reset Function -----------------*/
+void AD9850_Reset() {
+	int i;
+
+	GPIO_ResetBits(GPIOE, AD9850_CLK | AD9850_FQUP);
+	GPIO_SetBits(GPIOE, AD9850_RESET);
+
+	for(i=0; i<5; i++) {
+		AD9850_ClockCLK();
+	}
+
+	GPIO_ResetBits(GPIOE, AD9850_RESET);
+
+	for(i=0; i<2; i++) {
+		AD9850_ClockCLK();
+	}
+
+	AD9850_ClockFQUP();
+}
+
+/* --------------------------- Signal Generator PowerDown Function -----------------*/
+void AD9850_PowerDown() {
+
+	uint32_t word = (uint32_t) 0x0;
+	uint8_t w0 = 0b00000100;
+
+	int i;
+	AD9850_ClockFQUP();
+	for(i=0;i<4;i++) {
+		uint8_t w = (uint8_t) ((word >> i*8) & 0xff);
+		AD9850_Write(w);
+	}
+	AD9850_Write(w0);
+	AD9850_ClockFQUP();
+}
+
+/* --------------------------- Signal Generator SetFrequency Function -----------------*/
+void AD9850_SetFrequency(double freq) {
+	double x = 34.35973836;
+
+	freq *= x;
+
+	uint32_t y = (uint32_t) freq;
+
+	AD9850_ClockFQUP();
+	int i;
+	for(i=0;i<4;i++) {
+		uint8_t w = (uint8_t) ((y >> i*8) & 0xff);
+		AD9850_Write(w);
+	}
+	AD9850_Write(0x00);
+	AD9850_ClockFQUP();
 }
 
 /* --------------------------- Bluetooth Send Function -----------------*/
@@ -120,211 +219,36 @@ void Send_String_USART(const char *str) {
 	}
 }
 
-/* --------------------------- Signal Generator Function -----------------*/
-void SignalGenerator_Init() {
-
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE); //The ADC1 is connected the APB2 peripheral bus thus we will use its clock source
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE); //Clock for the ADC port PORT Group C
-
-	GPIO_InitTypeDef GPIO_InitStructure;
-
-	/*-------------------------- GPIO Configuration ----------------------------*/
-	// 1 = CLK || 3 = FQ || 7 = Reset
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_7;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE); //The ADC1 is connected the APB2 peripheral bus thus we will use its clock source
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE); //Clock for the ADC port PORT Group C
-
-	/*-------------------------- GPIO Configuration ----------------------------*/
-	//91 = Data
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOD, &GPIO_InitStructure);
-
-	// Init the Generator
-	GPIO_SetBits(GPIOA, GPIO_Pin_1);
-	GPIO_ResetBits(GPIOA, GPIO_Pin_1);
-	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
-	GPIO_ResetBits(GPIOD, GPIO_Pin_9);
-	GPIO_ResetBits(GPIOA, GPIO_Pin_7);
-
-}
-
-void SignalGenerator_Reset() {
-
-	GPIO_ResetBits(GPIOA, GPIO_Pin_1);
-	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
-
-	//Reset Signal
-	GPIO_ResetBits(GPIOA, GPIO_Pin_7);
-	GPIO_SetBits(GPIOA, GPIO_Pin_7);
-	GPIO_ResetBits(GPIOA, GPIO_Pin_7);
-
-	//CLK Signal
-	GPIO_ResetBits(GPIOA, GPIO_Pin_1);
-	GPIO_SetBits(GPIOA, GPIO_Pin_1);
-	GPIO_ResetBits(GPIOA, GPIO_Pin_1);
-
-	//FQ-UP Signal
-	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
-	GPIO_SetBits(GPIOA, GPIO_Pin_3);
-	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
-
-}
-
-void Byte_Write(const char word) {
-	int i;
-	for (i = 0; i < 8; i++) {
-		//Schreiben des Bytes (8 Bit)
-		//((uint8_t __IO*)&GPIOD->ODR)[0] = (word >> i) & 0x01;
-		//GPIOD->ODR = (word >> i) & 0x01;
-		GPIO_Write(GPIOD, (word >> i) & 0x01);
-		//CLK Rising Edge... verschiebt Pointer ein Register weiter
-		GPIO_SetBits(GPIOA, GPIO_Pin_1);
-		GPIO_ResetBits(GPIOA, GPIO_Pin_1);
-
-		//////////////////////////////////TEST
-		/*
-		uint8_t dataByte;
-		uint16_t dataHalfWord;
-
-		// 0x1234 auf PORTD schreiben
-		GPIO_Write(GPIOD, 0x1234);
-
-		// Lesen des Bits PC9
-		dataByte = GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_9);
-		// Lesen des Bits PC9 aus dem Output Register
-		dataByte = GPIO_ReadOutputDataBit(GPIOD, GPIO_Pin_9);
-		// Lesen von PORTD
-		dataHalfWord = GPIO_ReadInputData(GPIOD);
-		// Lesen von PORTD aus dem Output Register
-		dataHalfWord = GPIO_ReadOutputData(GPIOD);
-		 */
-		// Einzelnes bits schreiben
-		//GPIO_WriteBit(GPIOD, GPIO_Pin_9, Bit_SET);
-		//////////////////////////////////TESTENDE
-	}
-}
-
-
-void Byte_WriteDummy() {
-	int i;
-	for (i = 0; i < 40; i++) {
-
-		GPIO_SetBits(GPIOD, GPIO_Pin_9);
-		delayLoop(1000);
-		//CLK Rising Edge... verschiebt Pointer ein Register weiter
-		GPIO_SetBits(GPIOA, GPIO_Pin_1);
-		delayLoop(1000);
-		GPIO_ResetBits(GPIOA, GPIO_Pin_1);
-		delayLoop(1000);
-		GPIO_ResetBits(GPIOD, GPIO_Pin_9);
-		delayLoop(1000);
-	}
-}
-
-void SignalGenerator_SetFreq(double frequence) {
-
-	char w;
-	char w0 = 0x00;
-	long int y;
-	double x;
-
-	//Calculate the frequency of the HEX value
-	x = 4294967295 / 125; //Suitable for 125M Crystal
-	frequence = frequence / 1000000;
-	frequence = frequence * x;
-	y = frequence;
-
-	//FREQ -> Steigende Flanke -> laden des bis zu 40 Bis Worts
-	delayLoop(1000);
-	GPIO_SetBits(GPIOA, GPIO_Pin_3);
-	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
-	delayLoop(1000);
-	//write w4
-/*
-	w = (y >>= 0);
-	Byte_Write(w);
-
-	//write w3
-	w = (y >> 8);
-	Byte_Write(w);
-
-	//write w2
-	w = (y >> 16);
-	Byte_Write(w);
-
-	//write w1
-	w = (y >> 24);
-	Byte_Write(w);
-
-	//write w0
-	w = w0;
-	Byte_Write(w);
-*/
-
-	Byte_WriteDummy();
-
-	delayLoop(1000);
-	GPIO_SetBits(GPIOA, GPIO_Pin_3);
-	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
-	delayLoop(1000);
-}
-
-
-
-
 
 /* --------------------------- Main Function -----------------*/
 int main(void) {
 
 	//Init the Sytem
 	SystemInit();
+
 	//Init Bluetooth
 	//Bluetooth_Init();
+
 	//Init ADC
 	//Input_Init();
+
 	//Init LED (Blue)
 	STM32F4_Discovery_LEDInit(LED6);
 
-	//DAC_WAVE4_RECHTECK
-	//an DAC1 (PA4) ein Rechteck-Signal ausgeben
-	//Init vom DAC im DMA-Mode (DAC-1)
-	//UB_DAC_DMA_Init(SINGLE_DAC1_DMA);
-	//UB_DAC_DMA_SetWaveform1(DAC_WAVE4_RECHTECK);
-	//UB_DAC_DMA_SetFrq1(1, 21000);
-
-	SignalGenerator_Init();
-	delayLoop(1000);
-	SignalGenerator_Reset();
-	delayLoop(1000);
-	//SignalGenerator_Reset();
+	//Init AD9850
+	AD9850_Init();
+	AD9850_Reset();
+	AD9850_PowerDown();
 
 
 	while (1) {
 
-		SignalGenerator_SetFreq(5000);
+		//Frequenz setzen
+		AD9850_SetFrequency(250000);
 
-		//GPIO_SetBits(GPIOD, GPIO_Pin_9);
-
-		//STM32F4_Discovery_LEDOn(LED6);
-		//delayLoop(10000000);
-		//GPIO_SetBits(GPIOD, GPIO_Pin_9);
-
-		//GPIO_ResetBits(GPIOD, GPIO_Pin_9);
-
-		//STM32F4_Discovery_LEDOff(LED6);
-		//delayLoop(10000000);
-		//GPIO_ResetBits(GPIOD, GPIO_Pin_9);
 	}
+
+}
 
 //
 //	while (1) {
@@ -437,95 +361,5 @@ int main(void) {
 //		STM32F4_Discovery_LEDOff(LED6);
 //		delayLoop();
 //	}
-}
 
-//void SignalGenerator_SetFreqTEST(double frequence) {
-//
-//	char w;
-//	char w0 = 0x00;
-//	long int y;
-//	double x;
-//	int i;
-//
-//	//Calculate the frequency of the HEX value
-//	x = 4294967295 / 125; //Suitable for 125M Crystal
-//	frequence = frequence / 1000000;
-//	frequence = frequence * x;
-//	y = frequence;
-//
-//	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
-//
-//
-//	//write w4
-//	w = (y);
-//	Byte_Write(w);
-//
-//	//write w3
-//	w = (y >> 8);
-//	Byte_Write(w);
-//	//write w2
-//	w = (y >> 16);
-//	Byte_Write(w);
-//
-//	//write w1
-//	w = (y >> 24);
-//	Byte_Write(w);
-//
-//	//write w0
-//	w = 0x0;
-//	Byte_Write(w);
-//
-//	GPIO_SetBits(GPIOA, GPIO_Pin_3);
-//
-//}
-//
-//void Byte_Write(unsigned char word) {
-//	int i;
-//	for (i = 0; i < 8; i++) {
-//		GPIOD->ODR = (word >> i) & 0x01;
-//
-//		GPIO_SetBits(GPIOA, GPIO_Pin_1);
-//		GPIO_ResetBits(GPIOA, GPIO_Pin_1);
-//	}
-//}
-//
-//void SignalGenerator_SetFreqTEST(double frequence) {
-//
-//	char w;
-//	char w0 = 0x00;
-//	long int y;
-//	double x;
-//	int i;
-//
-//	//Calculate the frequency of the HEX value
-//	x = 4294967295 / 125; //Suitable for 125M Crystal
-//	frequence = frequence / 1000000;
-//	frequence = frequence * x;
-//	y = frequence;
-//
-//	GPIO_SetBits(GPIOA, GPIO_Pin_3);
-//	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
-//	GPIO_ResetBits(GPIOA, GPIO_Pin_1);
-//
-//	//write w4
-//	w = (y >>= 0);
-//	Byte_Write(w);
-//
-//	//write w3
-//	w = (y >> 8);
-//	Byte_Write(w);
-//	//write w2
-//	w = (y >> 16);
-//	Byte_Write(w);
-//
-//	//write w1
-//	w = (y >> 24);
-//	Byte_Write(w);
-//
-//	//write w0
-//	w = w0;
-//	Byte_Write(w);
-//
-//	GPIO_SetBits(GPIOA, GPIO_Pin_3);
-//	GPIO_ResetBits(GPIOA, GPIO_Pin_3);
-//}
+
