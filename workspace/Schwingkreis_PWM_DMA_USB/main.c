@@ -3,13 +3,13 @@
 #include "stdio.h"
 #include "string.h"
 
-//#include "stm32_ub_dac_dma.h"
-//#include "stm32f4xx_usart.h"
-//#include "stm32f4xx_rcc.h"
-//#include "stm32f4xx_gpio.h"
-//#include "stm32f4xx_conf.h"
-//#include "main.h"
-//#include "misc.h"
+#include "stm32_ub_dac_dma.h"
+#include "stm32f4xx_usart.h"
+#include "stm32f4xx_rcc.h"
+#include "stm32f4xx_gpio.h"
+#include "stm32f4xx_conf.h"
+#include "main.h"
+#include "misc.h"
 
 #define AD9850_CLK GPIO_Pin_7
 #define AD9850_FQUP GPIO_Pin_8
@@ -68,7 +68,7 @@ void Bluetooth_Init(void) {
 	 - Receive and transmit enabled
 	 */
 	USART_InitTypeDef USART_InitStructure;
-	USART_InitStructure.USART_BaudRate = 9600;
+	USART_InitStructure.USART_BaudRate = 115200;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
 	USART_InitStructure.USART_Parity = USART_Parity_No;
@@ -136,7 +136,7 @@ void Delay_Loop(uint32_t delay) {
 void AD9850_ClockCLK() {
 	//Signalflanke CLK generieren
 	GPIO_SetBits(GPIOE, AD9850_CLK);
-	Delay_Loop(10000);
+	//Delay_Loop(10000);
 	GPIO_ResetBits(GPIOE, AD9850_CLK);
 }
 
@@ -144,7 +144,7 @@ void AD9850_ClockCLK() {
 void AD9850_ClockFQUP() {
 	//Signalflanke FQ generieren
 	GPIO_SetBits(GPIOE, AD9850_FQUP);
-	Delay_Loop(10000);
+	//Delay_Loop(10000);
 	GPIO_ResetBits(GPIOE, AD9850_FQUP);
 }
 
@@ -169,7 +169,7 @@ void AD9850_Init() {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_Init(GPIOE, &GPIO_InitStructure);
@@ -228,7 +228,7 @@ int main(void) {
 	SystemInit();
 
 	//Init Bluetooth
-	//Bluetooth_Init();
+	Bluetooth_Init();
 
 	//Init ADC
 	Input_ADC_Init();
@@ -246,7 +246,8 @@ int main(void) {
 
 	//Welcher Frequenzbereich soll genutzt werden? {
 	//Frequenzen - 1-250kHz - 200 Schritte
-	double freq_ary[] = { 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000,
+
+	long int freq_ary[] = { 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000,
 			10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000,
 			19000, 20000, 21000, 22000, 23000, 24000, 25000, 26000, 27000,
 			28000, 29000, 30000, 31000, 32000, 33000, 34000, 35000, 36000,
@@ -277,9 +278,10 @@ int main(void) {
 			236000, 237000, 238000, 239000, 240000, 241000, 242000, 243000,
 			244000, 245000, 246000, 247000, 248000, 249000, 250000 };
 
-	/*
+
 	//Frequenzen - 1-3500kHz - 200 Schritte
-	double freq_ary[] = { 1000, 15053, 29105, 43157, 57209, 71261, 85313, 99365,
+	/*
+	long int freq_ary[] = { 1000, 15053, 29105, 43157, 57209, 71261, 85313, 99365,
 			113417, 127469, 141521, 155573, 169625, 183677, 197729, 211781,
 			225833, 239885, 253937, 267989, 282041, 296093, 310145, 324197,
 			338249, 352301, 366353, 380405, 394457, 408509, 422561, 436613,
@@ -320,12 +322,13 @@ int main(void) {
 	while (1) {
 
 		STM32F4_Discovery_LEDOn(LED6);
+		//Delay_Loop(1000000);
 
 		//Wir fahren mit dieser Schleife die Frequnezen ab
 		for (i = 1; i <= 200; i++) {
 
 			//Frequenz setzen
-			AD9850_SetFrequency(freq_ary[i]);
+			AD9850_SetFrequency(freq_ary[i-1]);
 
 			//Mehrfaches Messen um validität der Ergebnisse zu erhöhen
 			meas_comb = 0;
@@ -379,7 +382,7 @@ int main(void) {
 		Send_String_USART("END\r\n");
 
 		STM32F4_Discovery_LEDOff(LED6);
-		Delay_Loop(10000);
+		Delay_Loop(800000);
 	}
 }
 
