@@ -60,7 +60,7 @@ void Bluetooth_Init(void) {
 
 	/* USARTx configuration ------------------------------------------------------*/
 	/* USARTx configured as follow:
-	 - BaudRate = 9600 baud
+	 - BaudRate = 1382400 baud
 	 - Word Length = 8 Bits
 	 - Two Stop Bit
 	 - Odd parity
@@ -68,7 +68,7 @@ void Bluetooth_Init(void) {
 	 - Receive and transmit enabled
 	 */
 	USART_InitTypeDef USART_InitStructure;
-	USART_InitStructure.USART_BaudRate = 115200;
+	USART_InitStructure.USART_BaudRate = 1382400;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
 	USART_InitStructure.USART_Parity = USART_Parity_No;
