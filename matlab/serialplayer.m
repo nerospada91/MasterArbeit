@@ -17,7 +17,7 @@ period_freq = (period_freq ./ prescale_ary ./ period_ary)*1000;
 
 %Für den PC
 %Bluetooth
-s = serial('COM18');
+s = serial('COM17');
 %USB 
 %s = serial('COM13');
 s.InputBufferSize=1024; 

@@ -21,7 +21,7 @@
 // 2 = 1-3500 kHz in 200 Schritten
 
 //Wie oft soll jeder einzelne Wert gemessen werden?
-int n_measures = 100;
+int n_measures = 1;
 
 // AD9850 CLK  PE7
 // AD9850 FQ   PE8
@@ -60,7 +60,7 @@ void Bluetooth_Init(void) {
 
 	/* USARTx configuration ------------------------------------------------------*/
 	/* USARTx configured as follow:
-	 - BaudRate = 1382400 baud
+	 - BaudRate = 115200 baud
 	 - Word Length = 8 Bits
 	 - Two Stop Bit
 	 - Odd parity
@@ -68,7 +68,7 @@ void Bluetooth_Init(void) {
 	 - Receive and transmit enabled
 	 */
 	USART_InitTypeDef USART_InitStructure;
-	USART_InitStructure.USART_BaudRate = 1382400;
+	USART_InitStructure.USART_BaudRate = 115200;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
 	USART_InitStructure.USART_Parity = USART_Parity_No;

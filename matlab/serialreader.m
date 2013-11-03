@@ -18,7 +18,7 @@ try
     i=1;
     
     %BLUETOOTH!!!
-    btt = Bluetooth('JY-MCU', 1);
+    btt = Bluetooth('TOUCHEE', 1);
     btt.InputBufferSize=1024;
     fopen(btt);
     
