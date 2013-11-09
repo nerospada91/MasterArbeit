@@ -28,6 +28,8 @@ int n_measures = 1;
 // AD9850 Data PE9
 // AD9850 RST  PE10
 
+// WAVE-STM32 - PA4
+
 // BT-Modul TX PB10
 // BT-Modul RX PB11
 
@@ -237,16 +239,18 @@ int main(void) {
 	STM32F4_Discovery_LEDInit(LED6);
 
 	//Init and Reset AD9850
-	AD9850_Init();
+	//AD9850_Init();
+    UB_DAC_DMA_Init(SINGLE_DAC1_DMA);
+    UB_DAC_DMA_SetWaveform1(DAC_WAVE4_RECHTECK);
 
 	//Init some Variables for while loop ADC/DAC
-	int i, k, meas_raw, meas_fin;
+	int i, k, meas_raw, meas_fin, period;
 	char str_output[10], buffer[10];
 	double meas_comb;
 
 	//Welcher Frequenzbereich soll genutzt werden? {
 	//Frequenzen - 1-250kHz - 200 Schritte
-
+/*
 	long int freq_ary[] = { 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000,
 			10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000,
 			19000, 20000, 21000, 22000, 23000, 24000, 25000, 26000, 27000,
@@ -277,7 +281,7 @@ int main(void) {
 			228000, 229000, 230000, 231000, 232000, 233000, 234000, 235000,
 			236000, 237000, 238000, 239000, 240000, 241000, 242000, 243000,
 			244000, 245000, 246000, 247000, 248000, 249000, 250000 };
-
+*/
 
 	//Frequenzen - 1-3500kHz - 200 Schritte
 	/*
@@ -318,6 +322,25 @@ int main(void) {
 			3471845, 3485897, 3500000 };
 	 */
 
+    //Vorgebene Werte für Teiler und Periode um den Frequenz vorzugeben
+    int period_ary[] = { 21000, 10500, 7000, 5250, 4200, 3500, 3000, 2625, 2333,
+                    2100, 1909, 1750, 1615, 1500, 1400, 1313, 1235, 1167, 1105, 1050,
+                    1000, 955, 913, 875, 840, 808, 778, 750, 724, 700, 677, 656, 636,
+                    618, 600, 583, 568, 553, 538, 525, 512, 500, 488, 477, 467, 457,
+                    447, 438, 429, 420, 412, 404, 396, 389, 382, 375, 368, 362, 356,
+                    350, 344, 339, 333, 328, 323, 318, 313, 309, 304, 300, 296, 292,
+                    288, 284, 280, 276, 273, 269, 266, 263, 259, 256, 253, 250, 247,
+                    244, 241, 239, 236, 233, 231, 228, 226, 223, 221, 219, 216, 214,
+                    212, 210, 208, 206, 204, 202, 200, 198, 196, 194, 193, 191, 189,
+                    188, 186, 184, 183, 181, 179, 178, 176, 175, 174, 172, 171, 169,
+                    168, 167, 165, 164, 163, 162, 160, 159, 158, 157, 156, 154, 153,
+                    152, 151, 150, 149, 148, 147, 146, 145, 144, 143, 142, 141, 140,
+                    139, 138, 137, 136, 135, 133, 131, 130, 128, 127, 125, 124, 122,
+                    121, 119, 118, 117, 115, 114, 113, 112, 111, 109, 108, 107, 106,
+                    105, 104, 103, 102, 101, 100, 99, 98, 97, 96, 95, 95, 94, 93, 92,
+                    91, 90, 89, 88, 88, 87, 86, 85, 84};
+
+
 	//While don't exit
 	while (1) {
 
@@ -328,7 +351,9 @@ int main(void) {
 		for (i = 1; i <= 200; i++) {
 
 			//Frequenz setzen
-			AD9850_SetFrequency(freq_ary[i-1]);
+			//AD9850_SetFrequency(freq_ary[i-1]);
+			period = period_ary[i - 1];
+			UB_DAC_DMA_SetFrq1(1 - 1, period - 1);
 
 			//Mehrfaches Messen um validität der Ergebnisse zu erhöhen
 			meas_comb = 0;
@@ -381,8 +406,8 @@ int main(void) {
 		//Sendevorgang abgeschlossen -> END senden
 		Send_String_USART("END\r\n");
 
-		STM32F4_Discovery_LEDOff(LED6);
-		Delay_Loop(800000);
+		//STM32F4_Discovery_LEDOff(LED6);
+		Delay_Loop(300000);
 	}
 }
 

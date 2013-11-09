@@ -88,7 +88,7 @@ period_freq = (period_freq ./ prescale_ary ./ period_ary)*1000;
 i=1;
 
 %BLUETOOTH!!!
-btt = Bluetooth('JY-MCU', 1);
+btt = Bluetooth('TOUCHEE', 1);
 btt.InputBufferSize=1024;
 fopen(btt);
 
@@ -193,13 +193,15 @@ end
 
 
 
+
+
 % --- Executes on button press in pb_exit.
 function pb_exit_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_exit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 exit(handles);
-%delete(hObject);
+close;
 
 
 % --- Executes on button press in pb_user1.
