@@ -19,7 +19,8 @@ try
     
     %BLUETOOTH!!!
     btt = Bluetooth('TOUCHEE', 1);
-    btt.InputBufferSize=1024;
+    btt.InputBufferSize=5000000;
+    %btt.Terminator = {'CR/LF' 'CR/LF'};
     fopen(btt);
     
     period_res = zeros(200,1);
@@ -28,32 +29,33 @@ try
     ylim([0 4100])
     
     while i>0
-        idn = fscanf(btt);
-        
-        period_res = zeros(200,1);
-        
-        indexend = strfind(idn, 'END');
-        
-        if indexend == 801
-            
-            period_res = zeros(200,1);
-            
-            for k=0:199
-                if k == 0
-                    value_raw = idn(1:4);
-                    value_raw = strrep(value_raw, 'X', '');
-                    period_res(k+1) =  str2double(value_raw);
-                else
-                    value_raw = idn(k*4+1:(k+1)*4);
-                    value_raw = strrep(value_raw, 'X', '');
-                    period_res(k+1) =  str2double(value_raw);
-                end
-            end
-            
-        end
-        
-        set(hLine,'YData',period_res);  %Updaten der Kurve
-        drawnow %Steuerelement zwingen neu zu zeichnen
+        %idn = fread(btt);
+        idn=fscanf(btt);
+        disp(idn);
+%         period_res = zeros(200,1);
+%         
+%         indexend = strfind(idn, 'END');
+%         
+%         if indexend == 801
+%             
+%             period_res = zeros(200,1);
+%             
+%             for k=0:199
+%                 if k == 0
+%                     value_raw = idn(1:4);
+%                     value_raw = strrep(value_raw, 'X', '');
+%                     period_res(k+1) =  str2double(value_raw);
+%                 else
+%                     value_raw = idn(k*4+1:(k+1)*4);
+%                     value_raw = strrep(value_raw, 'X', '');
+%                     period_res(k+1) =  str2double(value_raw);
+%                 end
+%             end
+%             
+%         end
+%         
+%         set(hLine,'YData',period_res);  %Updaten der Kurve
+%         drawnow %Steuerelement zwingen neu zu zeichnen
         
     end
     

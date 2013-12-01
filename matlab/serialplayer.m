@@ -17,14 +17,13 @@ period_freq = (period_freq ./ prescale_ary ./ period_ary)*1000;
 
 %Für den PC
 %Bluetooth
-s = serial('COM17');
-%USB 
-%s = serial('COM13');
-s.InputBufferSize=1024; 
-%Für den Laptop
-%s = serial('COM8');
+s = serial('COM19');
+set(s, 'BaudRate',  115200)
+
+set(s, 'InputBufferSize',  1024)
 
 fopen(s);
+
 i=1;
 
 period_res = zeros(200,1);

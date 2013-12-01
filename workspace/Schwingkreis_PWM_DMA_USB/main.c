@@ -33,7 +33,7 @@ int n_measures = 1;
 // BT-Modul TX PB10
 // BT-Modul RX PB11
 
-// Schwingkreis Anschluss Weiss   PC4
+// Schwingkreis Anschluss Grün   PC4 / AD-Wandler
 // Schwingkreis Anschluss Schwarz Ground
 // Schwingkreis Anschluss Rot     AD9850-SinA
 // Schwingkreis Anschluss Gelb    Objekt
@@ -407,7 +407,7 @@ int main(void) {
 		Send_String_USART("END\r\n");
 
 		//STM32F4_Discovery_LEDOff(LED6);
-		Delay_Loop(300000);
+		//Delay_Loop(300000);
 	}
 }
 
