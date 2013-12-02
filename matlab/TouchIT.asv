@@ -221,7 +221,7 @@ while 1
 
 
         
-        k = svmclassify(touchit_gui_data.model1, period_volt);
+        k = svmclassify(models, period_volt);
         
         switch k
             case 1
@@ -472,23 +472,23 @@ s_class(21:40) = 2;
 %notouch vs onefinger
 SVMstruct1 = svmtrain(s_data,s_class);
 
-% s_data = [touchit_gui_data.onefinger; touchit_gui_data.notouch];
-% SVMstruct2 = svmtrain(s_data,s_class);
-% 
-% s_data = [touchit_gui_data.fivefingers; touchit_gui_data.notouch];
-% SVMstruct3 = svmtrain(s_data,s_class);
-% 
-% s_data = [touchit_gui_data.grasp; touchit_gui_data.notouch];
-% SVMstruct4 = svmtrain(s_data,s_class);
-% 
-% s_data = [touchit_gui_data.coverears; touchit_gui_data.notouch];
-% SVMstruct5 = svmtrain(s_data,s_class);
+s_data = [touchit_gui_data.onefinger; touchit_gui_data.notouch];
+SVMstruct2 = svmtrain(s_data,s_class);
+
+s_data = [touchit_gui_data.fivefingers; touchit_gui_data.notouch];
+SVMstruct3 = svmtrain(s_data,s_class);
+
+s_data = [touchit_gui_data.grasp; touchit_gui_data.notouch];
+SVMstruct4 = svmtrain(s_data,s_class);
+
+s_data = [touchit_gui_data.coverears; touchit_gui_data.notouch];
+SVMstruct5 = svmtrain(s_data,s_class);
 
 touchit_gui_data.model1 = SVMstruct1;
-% touchit_gui_data.model2 = SVMstruct2;
-% touchit_gui_data.model3 = SVMstruct3;
-% touchit_gui_data.model4 = SVMstruct4;
-% touchit_gui_data.model5 = SVMstruct5;
+touchit_gui_data.model2 = SVMstruct2;
+touchit_gui_data.model3 = SVMstruct3;
+touchit_gui_data.model4 = SVMstruct4;
+touchit_gui_data.model5 = SVMstruct5;
 
 % s_data = [touchit_gui_data.notouch; touchit_gui_data.onefinger; touchit_gui_data.fivefingers; touchit_gui_data.grasp; touchit_gui_data.coverears];
 % s_class = ones(40,1);
