@@ -221,7 +221,7 @@ while 1
 
 
         
-        k = svmclassify(touchit_gui_data.model1, period_volt);
+        k = svmpredict(6, period_volt, touchit_gui_data.model1, '-q');
         
         switch k
             case 1
@@ -236,24 +236,24 @@ while 1
                 set(touchit_gui_data.pb_fivefingers, 'BackgroundColor', [0.94 0.94 0.94]);
                 set(touchit_gui_data.pb_grasp, 'BackgroundColor', [0.94 0.94 0.94]);
                 set(touchit_gui_data.pb_coverears, 'BackgroundColor', [0.94 0.94 0.94]);
-%             case 3
-%                 set(touchit_gui_data.pb_notouch, 'BackgroundColor', [0.94 0.94 0.94]);
-%                 set(touchit_gui_data.pb_onefinger, 'BackgroundColor', [0.94 0.94 0.94]);
-%                 set(touchit_gui_data.pb_fivefingers, 'BackgroundColor','green');
-%                 set(touchit_gui_data.pb_grasp, 'BackgroundColor', [0.94 0.94 0.94]);
-%                 set(touchit_gui_data.pb_coverears, 'BackgroundColor', [0.94 0.94 0.94]);
-%             case 4
-%                 set(touchit_gui_data.pb_notouch, 'BackgroundColor', [0.94 0.94 0.94]);
-%                 set(touchit_gui_data.pb_onefinger, 'BackgroundColor', [0.94 0.94 0.94]);
-%                 set(touchit_gui_data.pb_fivefingers, 'BackgroundColor', [0.94 0.94 0.94]);
-%                 set(touchit_gui_data.pb_grasp, 'BackgroundColor', 'green');
-%                 set(touchit_gui_data.pb_coverears, 'BackgroundColor', [0.94 0.94 0.94]);
-%             case 5
-%                 set(touchit_gui_data.pb_notouch, 'BackgroundColor', [0.94 0.94 0.94]);
-%                 set(touchit_gui_data.pb_onefinger, 'BackgroundColor', [0.94 0.94 0.94]);
-%                 set(touchit_gui_data.pb_fivefingers, 'BackgroundColor', [0.94 0.94 0.94]);
-%                 set(touchit_gui_data.pb_grasp, 'BackgroundColor', [0.94 0.94 0.94]);
-%                 set(touchit_gui_data.pb_coverears, 'BackgroundColor', 'green');
+            case 3
+                set(touchit_gui_data.pb_notouch, 'BackgroundColor', [0.94 0.94 0.94]);
+                set(touchit_gui_data.pb_onefinger, 'BackgroundColor', [0.94 0.94 0.94]);
+                set(touchit_gui_data.pb_fivefingers, 'BackgroundColor','green');
+                set(touchit_gui_data.pb_grasp, 'BackgroundColor', [0.94 0.94 0.94]);
+                set(touchit_gui_data.pb_coverears, 'BackgroundColor', [0.94 0.94 0.94]);
+            case 4
+                set(touchit_gui_data.pb_notouch, 'BackgroundColor', [0.94 0.94 0.94]);
+                set(touchit_gui_data.pb_onefinger, 'BackgroundColor', [0.94 0.94 0.94]);
+                set(touchit_gui_data.pb_fivefingers, 'BackgroundColor', [0.94 0.94 0.94]);
+                set(touchit_gui_data.pb_grasp, 'BackgroundColor', 'green');
+                set(touchit_gui_data.pb_coverears, 'BackgroundColor', [0.94 0.94 0.94]);
+            case 5
+                set(touchit_gui_data.pb_notouch, 'BackgroundColor', [0.94 0.94 0.94]);
+                set(touchit_gui_data.pb_onefinger, 'BackgroundColor', [0.94 0.94 0.94]);
+                set(touchit_gui_data.pb_fivefingers, 'BackgroundColor', [0.94 0.94 0.94]);
+                set(touchit_gui_data.pb_grasp, 'BackgroundColor', [0.94 0.94 0.94]);
+                set(touchit_gui_data.pb_coverears, 'BackgroundColor', 'green');
         end
         
     end
@@ -400,7 +400,7 @@ guidata(handles.TouchIT_main,touchit_gui_data)
 % start(T)
 
 touchit_gui_data.tmr = timer('TimerFcn', {@TmrFcn,handles},'BusyMode','Queue',...
-    'ExecutionMode','fixedRate','Period',3);%timer 
+    'ExecutionMode','fixedRate','Period',5);%timer 
 
 touchit_gui_data.timer = 1;
 
@@ -409,6 +409,9 @@ start(touchit_gui_data.tmr);
 
 function TmrFcn(src,event,handles) %Timer function
 global rec_dat;
+
+%59 samples // 19 samples
+training_samples = 59;
 
 touchit_gui_data = guidata(handles.TouchIT_main);
 %touchit_gui_data.record = 0;
@@ -419,41 +422,41 @@ if (touchit_gui_data.timer == 1)
 end
 
 if (touchit_gui_data.timer == 2)
-    touchit_gui_data.notouch = rec_dat(end-19:end,:);
+    touchit_gui_data.notouch = rec_dat(end-training_samples:end,:);
     rec_dat = [];
     set(touchit_gui_data.pb_notouch, 'BackgroundColor', [0.94 0.94 0.94]);
     set(touchit_gui_data.pb_onefinger, 'BackgroundColor', 'green');
 end
 
 if (touchit_gui_data.timer == 3)
-    touchit_gui_data.onefinger = rec_dat(end-19:end,:);
+    touchit_gui_data.onefinger = rec_dat(end-training_samples:end,:);
     rec_dat = [];
     set(touchit_gui_data.pb_onefinger, 'BackgroundColor', [0.94 0.94 0.94]);
     set(touchit_gui_data.pb_fivefingers, 'BackgroundColor', 'green');
 end
 
 if (touchit_gui_data.timer == 4)
-    touchit_gui_data.fivefingers = rec_dat(end-19:end,:);
+    touchit_gui_data.fivefingers = rec_dat(end-training_samples:end,:);
     rec_dat = [];
     set(touchit_gui_data.pb_fivefingers, 'BackgroundColor', [0.94 0.94 0.94]);
     set(touchit_gui_data.pb_grasp, 'BackgroundColor', 'green');
 end
 
 if (touchit_gui_data.timer == 5)
-    touchit_gui_data.grasp = rec_dat(end-19:end,:);
+    touchit_gui_data.grasp = rec_dat(end-training_samples:end,:);
     rec_dat = [];
     set(touchit_gui_data.pb_grasp, 'BackgroundColor', [0.94 0.94 0.94]);
     set(touchit_gui_data.pb_coverears, 'BackgroundColor', 'green');
 end
 
 if (touchit_gui_data.timer == 6)
-    touchit_gui_data.coverears = rec_dat(end-19:end,:);
+    touchit_gui_data.coverears = rec_dat(end-training_samples:end,:);
     touchit_gui_data.record = 0;
     rec_dat = [];
     set(touchit_gui_data.pb_coverears, 'BackgroundColor', [0.94 0.94 0.94]);
     stop(touchit_gui_data.tmr);
     delete(touchit_gui_data.tmr);
-    touchit_gui_data = train_svm(touchit_gui_data);
+    touchit_gui_data = train_svm(touchit_gui_data,training_samples);
     set(touchit_gui_data.txt_nc, 'String', 'CALIBRATED');
     set(touchit_gui_data.txt_nc, 'ForegroundColor', 'green');
 end
@@ -462,15 +465,15 @@ end
 touchit_gui_data.timer = touchit_gui_data.timer +1;
 guidata(handles.TouchIT_main,touchit_gui_data);
 
-function [touchit_gui_data] = train_svm(touchit_gui_data)
+function [touchit_gui_data] = train_svm(touchit_gui_data,training_samples)
 
 % 1 2 3 4 5
-s_data = [touchit_gui_data.notouch; touchit_gui_data.onefinger];
-s_class = ones(40,1);
-s_class(1:20) = 1;
-s_class(21:40) = 2;
-%notouch vs onefinger
-SVMstruct1 = svmtrain(s_data,s_class);
+% s_data = [touchit_gui_data.notouch; touchit_gui_data.onefinger];
+% s_class = ones(40,1);
+% s_class(1:20) = 1;
+% s_class(21:40) = 2;
+% %notouch vs onefinger
+% SVMstruct1 = svmtrain(s_data,s_class);
 
 % s_data = [touchit_gui_data.onefinger; touchit_gui_data.notouch];
 % SVMstruct2 = svmtrain(s_data,s_class);
@@ -484,7 +487,7 @@ SVMstruct1 = svmtrain(s_data,s_class);
 % s_data = [touchit_gui_data.coverears; touchit_gui_data.notouch];
 % SVMstruct5 = svmtrain(s_data,s_class);
 
-touchit_gui_data.model1 = SVMstruct1;
+
 % touchit_gui_data.model2 = SVMstruct2;
 % touchit_gui_data.model3 = SVMstruct3;
 % touchit_gui_data.model4 = SVMstruct4;
@@ -497,6 +500,19 @@ touchit_gui_data.model1 = SVMstruct1;
 % s_class(51:60) = 3;
 % s_class(61:80) = 4;
 % s_class(81:100) = 5;
+
+%ohne cover ears
+s_data = [touchit_gui_data.notouch; touchit_gui_data.onefinger; touchit_gui_data.fivefingers; touchit_gui_data.grasp; touchit_gui_data.coverears];
+s_class = ones(40,1);
+s_class(1:training_samples+1) = 1;
+s_class(training_samples+2:training_samples*2+2) = 2;
+s_class(training_samples*2+3:training_samples*3+3) = 3;
+s_class(training_samples*3+4:training_samples*4+4) = 4;
+s_class(training_samples*4+5:training_samples*5+5) = 5;
+
+SVMstruct1 = svmtrain(s_class, s_data);
+
+touchit_gui_data.model1 = SVMstruct1;
 % 
 % % SVMstruct = svmtrain(s_data,s_class,'linear','rbf');
 % 
