@@ -70,8 +70,8 @@
   <Files>
     <File name="Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_tim.c" path="Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_tim.c" type="1"/>
     <File name="Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_cryp.c" path="Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_cryp.c" type="1"/>
-    <File name="cmsis_boot" path="" type="2"/>
     <File name="Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_fsmc.h" path="Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_fsmc.h" type="1"/>
+    <File name="cmsis_boot" path="" type="2"/>
     <File name="Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_iwdg.c" path="Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_iwdg.c" type="1"/>
     <File name="Libraries/src" path="" type="2"/>
     <File name="Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h" path="Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h" type="1"/>
