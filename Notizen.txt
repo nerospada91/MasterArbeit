@@ -21,3 +21,9 @@ Features Normalverteilt?
 Merkmalsklassifikator? Ensemble! SVM & Bayes, GMM Gaussian Mixture Model 20 komponenten?
 
 Auf Trennbarkeit testen...
+
+
+
+Samplegröße
+
+2 User unterscheiden Türknauf
