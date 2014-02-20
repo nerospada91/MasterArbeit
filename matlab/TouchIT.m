@@ -103,7 +103,7 @@ set(0,'userdata',1)
 period_res = zeros(200,1);
 
 hLine = plot(period_freq, period_res);
-ylim([0 2])
+ylim([0 5])
 %xlim([1, 250])
 
 touchit_gui_data = guidata(handles.TouchIT_main);
@@ -158,11 +158,13 @@ while 1
     else
         
         period_volt = get(hLine,'YData')*0.75 + ((period_filt*0.0012)*0.25)';
-        %period_volt = period_filt*0.0012;
+        period_volt = period_filt*0.0012;
     end
     
     iN = 5; % Länge des Filters
     [period_volt]  = filter(ones(1,iN)/iN, 1, period_volt);
+    
+    period_volt = period_res*0.0012;
     
     set(hLine,'YData',period_volt);  %Updaten der Kurve
     drawnow %Steuerelement zwingen neu zu zeichnen
