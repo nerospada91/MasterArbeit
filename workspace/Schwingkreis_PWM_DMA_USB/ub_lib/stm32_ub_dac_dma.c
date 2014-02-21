@@ -155,7 +155,7 @@ void UB_DAC_DMA_SetWaveform1(DAC_DMA_WAVE_NAME_t wave)
   if(akt_dac_dma_mode==SINGLE_DAC2_DMA) return; // wenn nicht erlaubt
 
   // Clock Enable (DMA)
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE); 
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
 
   // DMA init (DMA1, Channel7, Stream5)
   DMA_Cmd(DMA1_Stream5, DISABLE);
@@ -258,7 +258,7 @@ void UB_DAC_DMA_SetFrq1(uint16_t vorteiler, uint16_t periode)
 void UB_DAC_DMA_SetFrq2(uint16_t vorteiler, uint16_t periode)
 {
   TIM_TimeBaseInitTypeDef    TIM_TimeBaseStructure;
- 
+
   if(akt_dac_dma_mode==SINGLE_DAC1_DMA) return; // wenn nicht erlaubt
 
   // Timer-Config
