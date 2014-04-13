@@ -22,7 +22,7 @@ function varargout = TouchIT(varargin)
 
 % Edit the above text to modify the response to help TouchIT
 
-% Last Modified by GUIDE v2.5 15-Dec-2013 17:36:41
+% Last Modified by GUIDE v2.5 11-Apr-2014 18:47:35
 global rec_dat;
 rec_dat = [];
 global countit
@@ -84,53 +84,89 @@ function pb_con_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-prescale_ary=ones(200,1);
-period_ary = [64615,12000,6462,4421,3360,2710,2270,1953,1714,1527,1377,1254,1151,1063,988,923,866,816,771,730,694,661,632,604,579,556,535,515,497,480,464,449,435,422,410,398,387,377,367,357,349,340,332,324,317,310,303,297,291,285,279,274,268,263,258,254,249,245,241,237,233,229,225,222,218,215,212,208,205,202,200,197,194,191,189,185,182,179,176,173,170,168,165,162,160,158,155,153,151,149,147,145,143,141,139,137,135,134,132,130,129,127,126,124,123,121,120,118,117,116,115,113,112,111,110,109,108,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24]';
-period_freq = ones(200,1)*84;
+ad9850 = 1;
 
-period_ary = [1000, 15053, 29105, 43157, 57209, 71261, 85313, 99365,...
-				113417, 127469, 141521, 155573, 169625, 183677, 197729, 211781,...
-				225833, 239885, 253937, 267989, 282041, 296093, 310145, 324197,...
-				338249, 352301, 366353, 380405, 394457, 408509, 422561, 436613,...
-				450665, 464717, 478769, 492821, 506873, 520925, 534977, 549029,...
-				563081, 577133, 591185, 605237, 619289, 633341, 647393, 661445,...
-				675497, 689549, 703601, 717653, 731705, 745757, 759809, 773861,...
-				787913, 801965, 816017, 830069, 844121, 858173, 872225, 886277,...
-				900329, 914381, 928433, 942485, 956537, 970589, 984641, 998693,...
-				1012745, 1026797, 1040849, 1054901, 1068953, 1083005, 1097057,...
-				1111109, 1125161, 1139213, 1153265, 1167317, 1181369, 1195421,...
-				1209473, 1223525, 1237577, 1251629, 1265681, 1279733, 1293785,...
-				1307837, 1321889, 1335941, 1349993, 1364045, 1378097, 1392149,...
-				1406201, 1420253, 1434305, 1448357, 1462409, 1476461, 1490513,...
-				1504565, 1518617, 1532669, 1546721, 1560773, 1574825, 1588877,...
-				1602929, 1616981, 1631033, 1645085, 1659137, 1673189, 1687241,...
-				1701293, 1715345, 1729397, 1743449, 1757501, 1771553, 1785605,...
-				1799657, 1813709, 1827761, 1841813, 1855865, 1869917, 1883969,...
-				1898021, 1912073, 1926125, 1940177, 1954229, 1968281, 1982333,...
-				1996385, 2010437, 2024489, 2038541, 2052593, 2066645, 2080697,...
-				2094749, 2108801, 2122853, 2136905, 2150957, 2165009, 2179061,...
-				2193113, 2207165, 2221217, 2235269, 2249321, 2263373, 2277425,...
-				2291477, 2305529, 2319581, 2333633, 2347685, 2361737, 2375789,...
-				2389841, 2403893, 2417945, 2431997, 2446049, 2460101, 2474153,...
-				2488205, 2502257, 2516309, 2530361, 2544413, 2558465, 2572517,...
-				2586569, 2600621, 2614673, 2628725, 2642777, 2656829, 2670881,...
-				2684933, 2698985, 2713037, 2727089, 2741141, 2755193, 2769245,...
-				2783297, 2797349, 2811401, 2825453, 2839505, 2853557, 2867609,...
-				2881661, 2895713, 2909765, 2923817, 2937869, 2951921, 2965973,...
-				2980025, 2994077, 3008129, 3022181, 3036233, 3050285, 3064337,...
-				3078389, 3092441, 3106493, 3120545, 3134597, 3148649, 3162701,...
-				3176753, 3190805, 3204857, 3218909, 3232961, 3247013, 3261065,...
-				3275117, 3289169, 3303221, 3317273, 3331325, 3345377, 3359429,...
-				3373481, 3387533, 3401585, 3415637, 3429689, 3443741, 3457793,...
-				3471845, 3485897, 3500000]';
+%STM32
+if (ad9850 == 0)
+    
+    period_ary = [64615,11507,6316,4352,3320,2684,2252,1940,1704,1519,...
+        1370,1248,1146,1059,985,920,863,813,769,729,692,660,630,603,578,...
+        555,534,514,496,479,463,448,435,421,409,398,387,376,366,357,348,...
+        340,332,324,317,310,303,297,290,284,279,273,268,263,258,254,249,...
+        245,240,236,232,229,225,221,218,215,211,208,205,202,199,197,194,...
+        191,189,185,182,179,176,173,170,168,165,162,160,158,155,153,151,...
+        149,147,145,143,141,139,137,135,133,132,130,129,127,126,124,123,...
+        121,120,118,117,116,115,113,112,111,110,109,108,106,105,104,103,...
+        102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,...
+        82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,...
+        61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,...
+        40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24]';
+    
+    period_freq = 84000000./period_ary/1000;
+
+    
+    
+else
+    
+    %AD9850
+    
+    period_ary = [1000,5300,22950,40600,58250,75900,93550,111200,128850,...
+        146500,164150,181800,199450,217100,234750,252400,270050,287700,305350,...
+        323000,340650,358300,375950,393600,411250,428900,446550,464200,481850,...
+        499500,517150,534800,552450,570100,587750,605400,623050,640700,658350,...
+        676000,693650,711300,728950,746600,764250,781900,799550,817200,834850,...
+        852500,870150,887800,905450,923100,940750,958400,976050,993700,1011350,...
+        1029000,1046650,1064300,1081950,1099600,1117250,1134900,1152550,1170200,...
+        1187850,1205500,1223150,1240800,1258450,1276100,1293750,1311400,1329050,...
+        1346700,1364350,1382000,1399650,1417300,1434950,1452600,1470250,1487900,...
+        1505550,1523200,1540850,1558500,1576150,1593800,1611450,1629100,1646750,...
+        1664400,1682050,1699700,1717350,1735000,1752650,1770300,1787950,1805600,...
+        1823250,1840900,1858550,1876200,1893850,1911500,1929150,1946800,1964450,...
+        1982100,1999750,2017400,2035050,2052700,2070350,2088000,2105650,2123300,...
+        2140950,2158600,2176250,2193900,2211550,2229200,2246850,2264500,2282150,...
+        2299800,2317450,2335100,2352750,2370400,2388050,2405700,2423350,2441000,...
+        2458650,2476300,2493950,2511600,2529250,2546900,2564550,2582200,2599850,...
+        2617500,2635150,2652800,2670450,2688100,2705750,2723400,2741050,2758700,...
+        2776350,2794000,2811650,2829300,2846950,2864600,2882250,2899900,2917550,...
+        2935200,2952850,2970500,2988150,3005800,3023450,3041100,3058750,3076400,...
+        3094050,3111700,3129350,3147000,3164650,3182300,3199950,3217600,3235250,...
+        3252900,3270550,3288200,3305850,3323500,3341150,3358800,3376450,3394100,...
+        3411750,3429400,3447050,3464700,3482350,3500000]';
+    
+    
+        period_freq = period_ary/1000;
+end
+
+ary = [3200,2667,2286,2000,1778,1600,1455,1333,1231,1143,1067,...
+    1000,941,889,842,800,762,727,696,667,640,615,593,571,552,533,516,500,485,...
+    471,457,444,432,421,410,400,390,381,372,364,356,348,340,333,327,320,314,...
+    308,302,296,291,286,281,276,271,267,262,258,254,250,246,242,239,235,232,...
+    229,225,222,219,216,213,211,208,205,203,200,198,195,193,190,188,186,184,...
+    182,180,178,176,174,172,170,168,167,165,163,162,160,158,157,155,154,152,...
+    151,150,148,147,145,144,143,142,140,139,138,137,136,134,133,132,131,130,...
+    129,128,127,126,125,124,123,122,121,120,119,119,118,117,116,115,114,113,...
+    113,112,111,110,110,109,108,107,107,106,105,105,104,103,103,102,101,101,...
+    100,99,99,98,98,97,96,96,95,95,94,94,93,92,92,91,91,90,90,89,89,88,88,87,...
+    87,86,86,86,85,85,84,84,83,83,82,82,82,81,81,80,80,80,80,80,80];
+
+per_ard_freq = (flip(ary))';
 
 
-period_ary(201:end) =[];
-period_freq = ones(200,1)*1;
-
-%period_freq = (period_freq ./ prescale_ary ./ period_ary)*1000;
-period_freq = period_ary/1000;
-
+per_new = zeros(size(per_ard_freq));
+    
+for t = 1:size(per_ard_freq)
+    
+    f= period_freq;
+    
+    val = per_ard_freq(t); %value to find
+    tmp = abs(f-val);
+    [idx idx] = min(tmp); %index of closest value
+    closest = f(idx); %closest value
+    %%%%%%%%%%%%%%%%%%%
+    
+    per_new(t) = idx;
+    
+end
 i=1;
 
 %BLUETOOTH!!!
@@ -143,7 +179,9 @@ set(0,'userdata',1)
 period_res = zeros(200,1);
 
 hLine = plot(period_freq, period_res);
+%hLine = plot(1:200, period_res);
 ylim([0 5])
+
 %xlim([1, 250])
 
 touchit_gui_data = guidata(handles.TouchIT_main);
@@ -151,6 +189,9 @@ touchit_gui_data.btt = btt;
 touchit_gui_data.axesplot = hLine;
 touchit_gui_data.record = 0;
 touchit_gui_data.save = 0;
+touchit_gui_data.filter = 1;
+touchit_gui_data.arduino = 0;
+touchit_gui_data.capture = 0;
 guidata(handles.TouchIT_main,touchit_gui_data)
 firstshot = 1;
 
@@ -184,29 +225,56 @@ while 1
         
     end
     
-    
-    iN = 5; % Länge des Filters
-    [period_filt]  = filter(ones(1,iN)/iN, 1, period_res);
-    
-    
-    if (firstshot == 1)
+    if (touchit_gui_data.arduino == 1)
         
-        period_volt = period_filt*0.0012;
+        period_ar_volt = period_res(per_new);
+        period_res = period_ar_volt;
+        %set(gca,'XLim',[1 200]);
         
-        firstshot = 0;
-        
-    else
-        
-        period_volt = get(hLine,'YData')*0.5 + ((period_filt*0.0012)*0.5)';
-        %period_volt = period_filt*0.0012;
     end
     
-    iN = 5; % Länge des Filters
-    [period_volt]  = filter(ones(1,iN)/iN, 1, period_volt);
+    %%%%%%%%%%%%%%%%%%%%%%%FILTER
     
-    period_volt = period_res*0.0012;
+    if (touchit_gui_data.filter == 1)
+        
+        iN = 5; % Länge des Filters
+        [period_filt]  = filter(ones(1,iN)/iN, 1, period_res);
+        
+        
+        if (firstshot == 1)
+            
+            period_volt = period_filt*0.0012;
+            
+            firstshot = 0;
+            
+        else
+            
+            period_volt = get(hLine,'YData')*0.5 + ((period_filt*0.0012)*0.5)';
+            %period_volt = period_filt*0.0012;
+        end
+        
+    else
+        period_volt =  period_res*0.0012;
+    end
+    
+%     iN = 5; % Länge des Filters
+%     [period_volt]  = filter(ones(1,iN)/iN, 1, period_volt);
+    %period_volt = period_volt*0.0012;
+    
+    %%%%%%%%%%%%%%%%%%%% FILTER ENDE
+    %plot(period_freq, period_res)
     
     set(hLine,'YData',period_volt);  %Updaten der Kurve
+    
+    if (touchit_gui_data.capture == 1)
+        
+        set(gcf,'PaperUnits','inches','PaperPosition',[0 0 9 7.25])
+        print -djpeg capture.jpg -r100
+        touchit_gui_data.capture = 0;
+        guidata(handles.TouchIT_main,touchit_gui_data)
+    end
+
+    
     drawnow %Steuerelement zwingen neu zu zeichnen
     
     if get(0,'userdata') == 0
@@ -665,40 +733,99 @@ function pb_simulate_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+% touchit_gui_data = guidata(handles.TouchIT_main);
+% 
+% load('temp.mat')
+% 
+% 
+% period_freq = temp_data';
+% 
+%  period_ary = [1000,5300,22950,40600,58250,75900,93550,111200,128850,...
+%         146500,164150,181800,199450,217100,234750,252400,270050,287700,305350,...
+%         323000,340650,358300,375950,393600,411250,428900,446550,464200,481850,...
+%         499500,517150,534800,552450,570100,587750,605400,623050,640700,658350,...
+%         676000,693650,711300,728950,746600,764250,781900,799550,817200,834850,...
+%         852500,870150,887800,905450,923100,940750,958400,976050,993700,1011350,...
+%         1029000,1046650,1064300,1081950,1099600,1117250,1134900,1152550,1170200,...
+%         1187850,1205500,1223150,1240800,1258450,1276100,1293750,1311400,1329050,...
+%         1346700,1364350,1382000,1399650,1417300,1434950,1452600,1470250,1487900,...
+%         1505550,1523200,1540850,1558500,1576150,1593800,1611450,1629100,1646750,...
+%         1664400,1682050,1699700,1717350,1735000,1752650,1770300,1787950,1805600,...
+%         1823250,1840900,1858550,1876200,1893850,1911500,1929150,1946800,1964450,...
+%         1982100,1999750,2017400,2035050,2052700,2070350,2088000,2105650,2123300,...
+%         2140950,2158600,2176250,2193900,2211550,2229200,2246850,2264500,2282150,...
+%         2299800,2317450,2335100,2352750,2370400,2388050,2405700,2423350,2441000,...
+%         2458650,2476300,2493950,2511600,2529250,2546900,2564550,2582200,2599850,...
+%         2617500,2635150,2652800,2670450,2688100,2705750,2723400,2741050,2758700,...
+%         2776350,2794000,2811650,2829300,2846950,2864600,2882250,2899900,2917550,...
+%         2935200,2952850,2970500,2988150,3005800,3023450,3041100,3058750,3076400,...
+%         3094050,3111700,3129350,3147000,3164650,3182300,3199950,3217600,3235250,...
+%         3252900,3270550,3288200,3305850,3323500,3341150,3358800,3376450,3394100,...
+%         3411750,3429400,3447050,3464700,3482350,3500000]';
+% 
+%     period_ary = period_ary/1000;
+%     
+%     period_ary_arduino = [8000,5333.333,4000,3200,2666.666,2285.714,2000,...
+%         1777.777,1600,1454.545,1333.333,1230.769,1142.857,1066.666,1000,...
+%         941.176,888.888,842.105,800,761.904,727.272,695.652,666.666,640,...
+%         615.384,592.592,571.428,551.724,533.333,516.129,500,484.848,...
+%         470.588,457.142,444.444,432.432,421.052,410.256,400,390.243,...
+%         380.952,372.093,363.636,355.555,347.826,340.425,333.333,326.53,...
+%         320,313.725,307.692,301.886,296.296,290.909,285.714,280.701,...
+%         275.862,271.186,266.666,262.295,258.064,253.968,250,246.153,...
+%         242.424,238.805,235.294,231.884,228.571,225.352,222.222,219.178,...
+%         216.216,213.333,210.526,207.792,205.128,202.531,200,197.53,...
+%         195.121,192.771,190.476,188.235,186.046,183.908,181.818,179.775,...
+%         177.777,175.824,173.913,172.043,170.212,168.421,166.666,164.948,...
+%         163.265,161.616,160,158.415,156.862,155.339,153.846,152.38,...
+%         150.943,149.532,148.148,146.788,145.454,144.144,142.857,...
+%         141.592,140.35,139.13,137.931,136.752,135.593,134.453,133.333,...
+%         132.231,131.147,130.081,129.032,128,126.984,125.984,125,124.031,...
+%         123.076,122.137,121.212,120.3,119.402,118.518,117.647,116.788,...
+%         115.942,115.107,114.285,113.475,112.676,111.888,111.111,110.344,...
+%         109.589,108.843,108.108,107.382,106.666,105.96,105.263,104.575,...
+%         103.896,103.225,102.564,101.91,101.265,100.628,100,99.378,98.765,...
+%         98.159,97.56,96.969,96.385,95.808,95.238,94.674,94.117,93.567,...
+%         93.023,92.485,91.954,91.428,90.909,90.395,89.887,89.385,88.888,...
+%         88.397,87.912,87.431,86.956,86.486,86.021,85.561,85.106,84.656,...
+%         84.21,83.769,83.333,82.901,82.474,82.051,81.632,81.218,80.808,80.402,80.002,79.6];
+%     
+%     period_ary_arduino = fliplr(period_ary_arduino)';
+%     
+% i=1;
+% 
+% %BLUETOOTH!!!
+% 
+% hLine = plot(period_ary,period_freq);
+% ylim([0 5])
+% % 
+% % touchit_gui_data = guidata(handles.TouchIT_main);
+% % %touchit_gui_data.btt = btt;
+% % touchit_gui_data.axesplot = hLine;
+% % guidata(handles.TouchIT_main,touchit_gui_data)
+% % 
+% % period_res = randi(4000,1,200)';
+% % %set(hLine,'YData',period_res);  %Updaten der Kurve
+% % %drawnow %Steuerelement zwingen neu zu zeichnen
+% % iN = 2; % Länge des Filters
+% % period_res = filter(ones(1,iN)/iN, 1, period_res);
+% % 
+% % set(hLine,'YData',period_res);  %Updaten der Kurve
+% % drawnow %Steuerelement zwingen neu zu zeichnen
+% 
+% touchit_gui_data = guidata(handles.TouchIT_main);
+% touchit_gui_data.plothline = hLine;
+% guidata(touchit_gui_data.TouchIT_main, touchit_gui_data)
+% 
+% touchit_gui_data = guidata(handles.TouchIT_main);
+
+
 touchit_gui_data = guidata(handles.TouchIT_main);
 
-prescale_ary=ones(200,1);
-period_ary = [21000,10500,7000,5250,4200,3500,3000,2625,2333,2100,1909,1750,1615,1500,1400,1313,1235,1167,1105,1050,1000,955,913,875,840,808,778,750,724,700,677,656,636,618,600,583,568,553,538,525,512,500,488,477,467,457,447,438,429,420,412,404,396,389,382,375,368,362,356,350,344,339,333,328,323,318,313,309,304,300,296,292,288,284,280,276,273,269,266,263,259,256,253,250,247,244,241,239,236,233,231,228,226,223,221,219,216,214,212,210,208,206,204,202,200,198,196,194,193,191,189,188,186,184,183,181,179,178,176,175,174,172,171,169,168,167,165,164,163,162,160,159,158,157,156,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,133,131,130,128,127,125,124,122,121,119,118,117,115,114,113,112,111,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,95,94,93,92,91,90,89,88,88,87,86,85,84]';
-period_freq = ones(200,1)*21;
+touchit_gui_data.capture = 1;
 
-period_freq = (period_freq ./ prescale_ary ./ period_ary)*1000;
-
-i=1;
-
-%BLUETOOTH!!!
-period_res = zeros(200,1);
-hLine = plot(period_freq, period_res);
-ylim([0 4100])
-
-touchit_gui_data = guidata(handles.TouchIT_main);
-%touchit_gui_data.btt = btt;
-touchit_gui_data.axesplot = hLine;
 guidata(handles.TouchIT_main,touchit_gui_data)
-
-period_res = randi(4000,1,200)';
-%set(hLine,'YData',period_res);  %Updaten der Kurve
-%drawnow %Steuerelement zwingen neu zu zeichnen
-iN = 2; % Länge des Filters
-period_res = filter(ones(1,iN)/iN, 1, period_res);
-
-set(hLine,'YData',period_res);  %Updaten der Kurve
-drawnow %Steuerelement zwingen neu zu zeichnen
-
-touchit_gui_data = guidata(handles.TouchIT_main);
-touchit_gui_data.plothline = hLine;
-guidata(touchit_gui_data.TouchIT_main, touchit_gui_data)
-
-touchit_gui_data = guidata(handles.TouchIT_main);
+    
 
 
 
@@ -733,12 +860,12 @@ touchit_gui_data.record = 0;
 
 
 
-            set(touchit_gui_data.pb_notouch, 'String','no touch');
-            set(touchit_gui_data.pb_onefinger, 'String','one finger');
-            set(touchit_gui_data.pb_fivefingers, 'String','five fingers');
-            set(touchit_gui_data.pb_grasp, 'String','grasp');
-            set(touchit_gui_data.pb_coverears, 'String', 'cover ears');
-            
+set(touchit_gui_data.pb_notouch, 'String','no touch');
+set(touchit_gui_data.pb_onefinger, 'String','one finger');
+set(touchit_gui_data.pb_fivefingers, 'String','five fingers');
+set(touchit_gui_data.pb_grasp, 'String','grasp');
+set(touchit_gui_data.pb_coverears, 'String', 'cover ears');
+
 guidata(handles.TouchIT_main,touchit_gui_data)
 
 
@@ -759,12 +886,12 @@ touchit_gui_data.record = 0;
 
 
 
-            set(touchit_gui_data.pb_notouch, 'String','not present');
-            set(touchit_gui_data.pb_onefinger, 'String','one hand');
-            set(touchit_gui_data.pb_fivefingers, 'String','two hands');
-            set(touchit_gui_data.pb_grasp, 'String','one elbow');
-            set(touchit_gui_data.pb_coverears, 'String', 'arms flat');
-            
+set(touchit_gui_data.pb_notouch, 'String','not present');
+set(touchit_gui_data.pb_onefinger, 'String','one hand');
+set(touchit_gui_data.pb_fivefingers, 'String','two hands');
+set(touchit_gui_data.pb_grasp, 'String','one elbow');
+set(touchit_gui_data.pb_coverears, 'String', 'arms flat');
+
 guidata(handles.TouchIT_main,touchit_gui_data)
 
 
@@ -785,12 +912,12 @@ touchit_gui_data.record = 0;
 
 
 
-            set(touchit_gui_data.pb_notouch, 'String','no touch');
-            set(touchit_gui_data.pb_onefinger, 'String','one finger');
-            set(touchit_gui_data.pb_fivefingers, 'String','five fingers');
-            set(touchit_gui_data.pb_grasp, 'String','grasp');
-            set(touchit_gui_data.pb_coverears, 'String', 'cover ears');
-            
+set(touchit_gui_data.pb_notouch, 'String','no touch');
+set(touchit_gui_data.pb_onefinger, 'String','one finger');
+set(touchit_gui_data.pb_fivefingers, 'String','five fingers');
+set(touchit_gui_data.pb_grasp, 'String','grasp');
+set(touchit_gui_data.pb_coverears, 'String', 'cover ears');
+
 guidata(handles.TouchIT_main,touchit_gui_data)
 
 
@@ -811,12 +938,12 @@ touchit_gui_data.record = 0;
 
 
 
-            set(touchit_gui_data.pb_notouch, 'String','no touch');
-            set(touchit_gui_data.pb_onefinger, 'String','one finger');
-            set(touchit_gui_data.pb_fivefingers, 'String','three fingers');
-            set(touchit_gui_data.pb_grasp, 'String','finger bot');
-            set(touchit_gui_data.pb_coverears, 'String', 'hand subm');
-            
+set(touchit_gui_data.pb_notouch, 'String','no touch');
+set(touchit_gui_data.pb_onefinger, 'String','one finger');
+set(touchit_gui_data.pb_fivefingers, 'String','three fingers');
+set(touchit_gui_data.pb_grasp, 'String','finger bot');
+set(touchit_gui_data.pb_coverears, 'String', 'hand subm');
+
 guidata(handles.TouchIT_main,touchit_gui_data)
 
 
@@ -838,11 +965,58 @@ touchit_gui_data.record = 0;
 
 
 
-            set(touchit_gui_data.pb_notouch, 'String','no touch');
-            set(touchit_gui_data.pb_onefinger, 'String','one finger');
-            set(touchit_gui_data.pb_fivefingers, 'String','pinch');
-            set(touchit_gui_data.pb_grasp, 'String','circle');
-            set(touchit_gui_data.pb_coverears, 'String', 'grasp');
-            
+set(touchit_gui_data.pb_notouch, 'String','no touch');
+set(touchit_gui_data.pb_onefinger, 'String','one finger');
+set(touchit_gui_data.pb_fivefingers, 'String','pinch');
+set(touchit_gui_data.pb_grasp, 'String','circle');
+set(touchit_gui_data.pb_coverears, 'String', 'grasp');
+
 guidata(handles.TouchIT_main,touchit_gui_data)
+
+
+
+% --- Executes on button press in pb_filter.
+function pb_filter_Callback(hObject, eventdata, handles)
+% hObject    handle to pb_filter (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+touchit_gui_data = guidata(handles.TouchIT_main);
+
+if (touchit_gui_data.filter == 0)
+    
+    touchit_gui_data.filter = 1;
+    
+else
+    
+    touchit_gui_data.filter = 0;
+    
+end
+
+guidata(handles.TouchIT_main,touchit_gui_data)
+    
+
+
+
+% --- Executes on button press in pb_ardu.
+function pb_ardu_Callback(hObject, eventdata, handles)
+% hObject    handle to pb_ardu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+touchit_gui_data = guidata(handles.TouchIT_main);
+
+if (touchit_gui_data.arduino == 0)
+    
+    touchit_gui_data.arduino = 1;
+    
+else
+    
+    touchit_gui_data.arduino = 0;
+    
+end
+
+guidata(handles.TouchIT_main,touchit_gui_data)
+    
+
 
