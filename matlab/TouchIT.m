@@ -149,24 +149,24 @@ ary = [3200,2667,2286,2000,1778,1600,1455,1333,1231,1143,1067,...
     100,99,99,98,98,97,96,96,95,95,94,94,93,92,92,91,91,90,90,89,89,88,88,87,...
     87,86,86,86,85,85,84,84,83,83,82,82,82,81,81,80,80,80,80,80,80];
 
-per_ard_freq = (flip(ary))';
+%per_ard_freq = (flip(ary))';
 
 
-per_new = zeros(size(per_ard_freq));
+%per_new = zeros(size(per_ard_freq));
     
-for t = 1:size(per_ard_freq)
-    
-    f= period_freq;
-    
-    val = per_ard_freq(t); %value to find
-    tmp = abs(f-val);
-    [idx idx] = min(tmp); %index of closest value
-    closest = f(idx); %closest value
-    %%%%%%%%%%%%%%%%%%%
-    
-    per_new(t) = idx;
-    
-end
+% for t = 1:size(per_ard_freq)
+%     
+%     f= period_freq;
+%     
+%     val = per_ard_freq(t); %value to find
+%     tmp = abs(f-val);
+%     [idx idx] = min(tmp); %index of closest value
+%     closest = f(idx); %closest value
+%     %%%%%%%%%%%%%%%%%%%
+%     
+%     per_new(t) = idx;
+%     
+% end
 i=1;
 
 %BLUETOOTH!!!
