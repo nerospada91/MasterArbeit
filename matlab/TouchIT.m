@@ -225,6 +225,12 @@ while 1
         
     end
     
+    
+    period_res(1) = period_res(4);
+    period_res(2) = period_res(4);
+    period_res(3) = period_res(4);
+
+    
     if (touchit_gui_data.arduino == 1)
         
         period_ar_volt = period_res(per_new);
@@ -382,24 +388,117 @@ while 1
 %                 set(touchit_gui_data.pb_coverears, 'BackgroundColor', 'green');
 %         end
 %         
+% 
+% h = sum(touchit_gui_data.notouch)/59;
+% a = corrcoef(h(50:80)', period_volt(50:80)');
+% 
+% h = sum(touchit_gui_data.onefinger)/59;
+% b = corrcoef(h(50:80)', period_volt(50:80)');
+% 
+% h = sum(touchit_gui_data.fivefingers)/59;
+% c = corrcoef(h(50:80)', period_volt(50:80)');
+% 
+% h = sum(touchit_gui_data.grasp)/59;
+% d = corrcoef(h(50:80)', period_volt(50:80)');
+% 
+% h = sum(touchit_gui_data.coverears)/59;
+% e = corrcoef(h(50:80)', period_volt(50:80)');
+
+% b = corr((sum(touchit_gui_data.onefinger)/59)', period_volt');
+% 
+% c = corr((sum(touchit_gui_data.fivefingers)/59)', period_volt');
+% 
+% d = corr((sum(touchit_gui_data.grasp)/59)', period_volt');
+% 
+% e = corr((sum(touchit_gui_data.coverears)/59)', period_volt');
+
+
+
+h = sum(touchit_gui_data.notouch)/59;
+h = [h(50:80); period_volt(50:80)];
+a = sum(abs(diff(h)));
+
+h = sum(touchit_gui_data.onefinger)/59;
+h = [h(50:80); period_volt(50:80)];
+b = sum(abs(diff(h)));
+
+h = sum(touchit_gui_data.fivefingers)/59;
+h = [h(50:80); period_volt(50:80)];
+c = sum(abs(diff(h)));
+
+h = sum(touchit_gui_data.grasp)/59;
+h = [h(50:80); period_volt(50:80)];
+d = sum(abs(diff(h)));
+
+h = sum(touchit_gui_data.coverears)/59;
+h = [h(50:80); period_volt(50:80)];
+e = sum(abs(diff(h)));
+%e=10000;
+
+
+
+k = 1;
+
+if b < a
+    
+    k = 2;
+    
+    if c < b
         
-                k1 = svmclassify(touchit_gui_data.model1,period_volt);
+        k = 3;
         
-                k2 = svmclassify(touchit_gui_data.model2,period_volt);
+    end
+    
+    if d < c
         
-                k3 = svmclassify(touchit_gui_data.model3,period_volt);
+        k = 4;
         
-                k4 = svmclassify(touchit_gui_data.model4,period_volt);
+    end
+    
+    if e < d
         
-                k5 = svmclassify(touchit_gui_data.model5,period_volt);
+        k = 5;
         
-                set(touchit_gui_data.pb_notouch, 'BackgroundColor', [0.94 0.94 0.94]);
-                set(touchit_gui_data.pb_onefinger, 'BackgroundColor', [0.94 0.94 0.94]);
-                set(touchit_gui_data.pb_fivefingers, 'BackgroundColor', [0.94 0.94 0.94]);
-                set(touchit_gui_data.pb_grasp, 'BackgroundColor', [0.94 0.94 0.94]);
-                set(touchit_gui_data.pb_coverears, 'BackgroundColor', [0.94 0.94 0.94]);
+    end
+    
+    
+end
+
+% k = 1;
+% 
+% if b > a
+%     
+%     k = 2;
+%     
+%     if c > b
+%         
+%         k = 3;
+%         
+%     end
+%     
+%     if d > c
+%         
+%         k = 4;
+%         
+%     end
+%     
+%     if e > d
+%         
+%         k = 5;
+%         
+%     end
+%     
+%     
+% end
+
+
+%                 set(touchit_gui_data.pb_notouch, 'BackgroundColor', [0.94 0.94 0.94]);
+%                 set(touchit_gui_data.pb_onefinger, 'BackgroundColor', [0.94 0.94 0.94]);
+%                 set(touchit_gui_data.pb_fivefingers, 'BackgroundColor', [0.94 0.94 0.94]);
+%                 set(touchit_gui_data.pb_grasp, 'BackgroundColor', [0.94 0.94 0.94]);
+%                 set(touchit_gui_data.pb_coverears, 'BackgroundColor', [0.94 0.94 0.94]);
         
-                if (k1 == 1)
+                if (k == 1)
                     set(touchit_gui_data.pb_notouch, 'BackgroundColor', 'green');
                     set(touchit_gui_data.pb_onefinger, 'BackgroundColor', [0.94 0.94 0.94]);
                     set(touchit_gui_data.pb_fivefingers, 'BackgroundColor', [0.94 0.94 0.94]);
@@ -407,7 +506,7 @@ while 1
                     set(touchit_gui_data.pb_coverears, 'BackgroundColor', [0.94 0.94 0.94]);
                 end
         
-                if (k2 == 2)
+                if (k == 2)
                     set(touchit_gui_data.pb_notouch, 'BackgroundColor', [0.94 0.94 0.94]);
                     set(touchit_gui_data.pb_onefinger, 'BackgroundColor','green');
                     set(touchit_gui_data.pb_fivefingers, 'BackgroundColor', [0.94 0.94 0.94]);
@@ -415,7 +514,7 @@ while 1
                     set(touchit_gui_data.pb_coverears, 'BackgroundColor', [0.94 0.94 0.94]);
                 end
         
-                if (k3 == 3)
+                if (k == 3)
                     set(touchit_gui_data.pb_notouch, 'BackgroundColor', [0.94 0.94 0.94]);
                     set(touchit_gui_data.pb_onefinger, 'BackgroundColor', [0.94 0.94 0.94]);
                     set(touchit_gui_data.pb_fivefingers, 'BackgroundColor','green');
@@ -424,7 +523,7 @@ while 1
                 end
         
         
-                if (k4 == 4)
+                if (k == 4)
                     set(touchit_gui_data.pb_notouch, 'BackgroundColor', [0.94 0.94 0.94]);
                     set(touchit_gui_data.pb_onefinger, 'BackgroundColor', [0.94 0.94 0.94]);
                     set(touchit_gui_data.pb_fivefingers, 'BackgroundColor', [0.94 0.94 0.94]);
@@ -433,13 +532,71 @@ while 1
                 end
         
         
-                if (k5 == 5)
+                if (k == 5)
                     set(touchit_gui_data.pb_notouch, 'BackgroundColor', [0.94 0.94 0.94]);
                     set(touchit_gui_data.pb_onefinger, 'BackgroundColor', [0.94 0.94 0.94]);
                     set(touchit_gui_data.pb_fivefingers, 'BackgroundColor', [0.94 0.94 0.94]);
                     set(touchit_gui_data.pb_grasp, 'BackgroundColor', [0.94 0.94 0.94]);
                     set(touchit_gui_data.pb_coverears, 'BackgroundColor', 'green');
                 end
+        
+%                 k1 = svmclassify(touchit_gui_data.model1,period_volt);
+%         
+%                 k2 = svmclassify(touchit_gui_data.model2,period_volt);
+%         
+%                 k3 = svmclassify(touchit_gui_data.model3,period_volt);
+%         
+%                 k4 = svmclassify(touchit_gui_data.model4,period_volt);
+%         
+%                 k5 = svmclassify(touchit_gui_data.model5,period_volt);
+        
+%                 set(touchit_gui_data.pb_notouch, 'BackgroundColor', [0.94 0.94 0.94]);
+%                 set(touchit_gui_data.pb_onefinger, 'BackgroundColor', [0.94 0.94 0.94]);
+%                 set(touchit_gui_data.pb_fivefingers, 'BackgroundColor', [0.94 0.94 0.94]);
+%                 set(touchit_gui_data.pb_grasp, 'BackgroundColor', [0.94 0.94 0.94]);
+%                 set(touchit_gui_data.pb_coverears, 'BackgroundColor', [0.94 0.94 0.94]);
+%         
+%                 if (k1 == 1)
+%                     set(touchit_gui_data.pb_notouch, 'BackgroundColor', 'green');
+%                     set(touchit_gui_data.pb_onefinger, 'BackgroundColor', [0.94 0.94 0.94]);
+%                     set(touchit_gui_data.pb_fivefingers, 'BackgroundColor', [0.94 0.94 0.94]);
+%                     set(touchit_gui_data.pb_grasp, 'BackgroundColor', [0.94 0.94 0.94]);
+%                     set(touchit_gui_data.pb_coverears, 'BackgroundColor', [0.94 0.94 0.94]);
+%                 end
+%         
+%                 if (k2 == 2)
+%                     set(touchit_gui_data.pb_notouch, 'BackgroundColor', [0.94 0.94 0.94]);
+%                     set(touchit_gui_data.pb_onefinger, 'BackgroundColor','green');
+%                     set(touchit_gui_data.pb_fivefingers, 'BackgroundColor', [0.94 0.94 0.94]);
+%                     set(touchit_gui_data.pb_grasp, 'BackgroundColor', [0.94 0.94 0.94]);
+%                     set(touchit_gui_data.pb_coverears, 'BackgroundColor', [0.94 0.94 0.94]);
+%                 end
+%         
+%                 if (k3 == 3)
+%                     set(touchit_gui_data.pb_notouch, 'BackgroundColor', [0.94 0.94 0.94]);
+%                     set(touchit_gui_data.pb_onefinger, 'BackgroundColor', [0.94 0.94 0.94]);
+%                     set(touchit_gui_data.pb_fivefingers, 'BackgroundColor','green');
+%                     set(touchit_gui_data.pb_grasp, 'BackgroundColor', [0.94 0.94 0.94]);
+%                     set(touchit_gui_data.pb_coverears, 'BackgroundColor', [0.94 0.94 0.94]);
+%                 end
+%         
+%         
+%                 if (k4 == 4)
+%                     set(touchit_gui_data.pb_notouch, 'BackgroundColor', [0.94 0.94 0.94]);
+%                     set(touchit_gui_data.pb_onefinger, 'BackgroundColor', [0.94 0.94 0.94]);
+%                     set(touchit_gui_data.pb_fivefingers, 'BackgroundColor', [0.94 0.94 0.94]);
+%                     set(touchit_gui_data.pb_grasp, 'BackgroundColor', 'green');
+%                     set(touchit_gui_data.pb_coverears, 'BackgroundColor', [0.94 0.94 0.94]);
+%                 end
+%         
+%         
+%                 if (k5 == 5)
+%                     set(touchit_gui_data.pb_notouch, 'BackgroundColor', [0.94 0.94 0.94]);
+%                     set(touchit_gui_data.pb_onefinger, 'BackgroundColor', [0.94 0.94 0.94]);
+%                     set(touchit_gui_data.pb_fivefingers, 'BackgroundColor', [0.94 0.94 0.94]);
+%                     set(touchit_gui_data.pb_grasp, 'BackgroundColor', [0.94 0.94 0.94]);
+%                     set(touchit_gui_data.pb_coverears, 'BackgroundColor', 'green');
+%                 end
         
         
         

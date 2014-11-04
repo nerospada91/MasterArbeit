@@ -1,11 +1,11 @@
 %load('temp.mat');
-plota = (fliplr(temp_dataOFF));
-plotb = (fliplr(temp_dataMA'));
-plotc = (fliplr(temp_dataSG'));
+plota = (fliplr(temp_data33'));
+plotb = (fliplr(temp_data66'));
+plotc = (fliplr(temp_dat1'));
+plotd = (fliplr(temp_data10'));
 
-
-plot(period_freq, plota, '-g',period_freq, plotb, '-r',period_freq, plotc, '-b')
-hleg1 = legend('kein Filter', 'Moving Average', 'Segerogy');
+plot(period_freq, plota, '-g',period_freq, plotb, '-r',period_freq, plotc, '-b',period_freq, plotd, '-y')
+hleg1 = legend('0,66mH', '0,33mH', '1mH', '10mH');
 xlabel('Frequenz kHz')
 ylabel('Spannung Volt')
 
