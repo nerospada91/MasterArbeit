@@ -311,7 +311,7 @@ while 1
     end
     
     if (touchit_gui_data.save == 1)
-        
+
         
         if touchit_gui_data.countsave < 201
             
@@ -321,10 +321,12 @@ while 1
             guidata(touchit_gui_data.TouchIT_main, touchit_gui_data)
             
         else
+            
             temp_data = mean(temp_data);
             save('temp.mat', 'temp_data', 'period_freq')
             touchit_gui_data.save = 0;
             guidata(touchit_gui_data.TouchIT_main, touchit_gui_data)
+
             
         end
     end
